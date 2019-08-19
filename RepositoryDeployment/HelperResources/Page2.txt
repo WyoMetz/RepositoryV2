@@ -1,0 +1,1 @@
+﻿To find the full pathway to your ShareDrive, click on the mapped drive Letter in file explorer.

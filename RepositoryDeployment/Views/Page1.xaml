@@ -1,0 +1,75 @@
+﻿<Page x:Class="RepositoryDeployment.Views.Page1"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:RepositoryDeployment.Views" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="12" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" Title="InformationView">
+		<Grid>
+				<Grid.RowDefinitions>
+						<RowDefinition Height='90*' />
+						<RowDefinition Height='10*' />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<TextBlock Text='Deployment Layout' FontSize='24' HorizontalAlignment='Center' />
+				<TextBlock Text='The Document Repository will Automatically create its own file and folder structure similar to the diagram on the right. This is the Default deployment and can be adjusted in later menus.' FontSize='16' HorizontalAlignment='Center' VerticalAlignment='Center' TextWrapping='Wrap' Margin='24' />
+				<TreeView Grid.Column='1' BorderBrush='{DynamicResource PrimaryHueLightBrush}'>
+						<TreeViewItem IsExpanded='True'>
+								<TreeViewItem.Header>
+										<StackPanel Orientation='Horizontal'>
+												<TextBlock Text='\\ServerName\Share\IDR   ' />
+												<materialDesign:PackIcon Kind='ArrowBack' />
+												<TextBlock Text='This is the Default Top Level Folder' />
+										</StackPanel>
+								</TreeViewItem.Header>
+								<TreeViewItem Header='\Repository' IsExpanded='True'>
+										<TextBlock Text='Repository.db' />
+										<TextBlock Text='sqlite3.exe' />
+										<TreeViewItem Header='\UnitDiary'>
+												<TreeViewItem Header='2019'>
+														<TextBlock Text='2119.pdf' />
+														<TextBlock Text='2120.pdf' />
+												</TreeViewItem>
+										</TreeViewItem>
+										<TreeViewItem Header='\Documentation'>
+												<TreeViewItem Header='\123456_Lance'>
+														<TextBlock Text='FSA-T_2019_6_25_831.pdf' />
+														<TextBlock Text='Marriage Docs_2019_6_15_451.doc' />
+												</TreeViewItem>
+												<TreeViewItem Header='\789321654_Coolie'>
+														<TextBlock Text='FSA-R_2019_6_25_831.pdf' />
+														<TextBlock Text='OBI_2019_6_15_451.doc' />
+												</TreeViewItem>
+										</TreeViewItem>
+										<TreeViewItem Header='\UserFiles'>
+												<TreeViewItem Header='\dakota.metz'>
+														<TextBlock Text='MotoPic.jpg' />
+														<TextBlock Text='MarinesBackground.png' />
+												</TreeViewItem>
+												<TreeViewItem Header='\juan.vaca'>
+														<TextBlock Text='SuperFly.jpg' />
+														<TextBlock Text='BoringPic.png' />
+												</TreeViewItem>
+										</TreeViewItem>
+								</TreeViewItem>
+								<TreeViewItem Header='\Applications'>
+										<TreeViewItem Header='\DocumentRepository'>
+												<TextBlock Text='....Large Number of files' />
+										</TreeViewItem>
+										<TreeViewItem Header='\IDRAdministration'>
+												<TextBlock Text='....Large Number of files' />
+										</TreeViewItem>
+										<TreeViewItem Header='\RepositoryDownloader'>
+												<TextBlock Text='....Large Number of files' />
+										</TreeViewItem>
+										<TreeViewItem Header='\And More to Come...'>
+												<TextBlock Text='....Large Number of files' />
+										</TreeViewItem>
+								</TreeViewItem>
+						</TreeViewItem>
+				</TreeView>
+				<Button Content='Continue' Grid.Row='1' Grid.Column='1' HorizontalAlignment='Right' Command='{Binding MovePage2}' />
+		</Grid>
+</Page>

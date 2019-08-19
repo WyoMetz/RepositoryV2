@@ -1,0 +1,25 @@
+﻿<Page x:Class="RepositoryDeployment.Views.UpdateDefault"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:RepositoryDeployment.Views" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="16" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" Title="InformationView">
+		<Grid>
+				<Grid.RowDefinitions>
+						<RowDefinition Height='90*' />
+						<RowDefinition Height='10*' />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<TextBlock Text='Deployment Path' Grid.ColumnSpan='2' HorizontalAlignment='Center' FontSize='22' />
+				<TextBlock Text='On the right Paste in the Pathway way to your ShareDrive Folder and check confirm below before continuing. DO NOT include the IDR folder as it will be automatically configured.' VerticalAlignment='Center' HorizontalAlignment='Center' TextWrapping='Wrap' />
+				<StackPanel Grid.Column='1' VerticalAlignment='Center'>
+						<TextBox Text='{Binding BaseLocation}' materialDesign:HintAssist.IsFloating='True' materialDesign:HintAssist.Hint='ShareDrive Pathway' />
+						<CheckBox Content='Confirm Path' IsChecked='{Binding ConfirmChecked}' Margin='8' />
+				</StackPanel>
+				<Button Content='Continue' Grid.Row='1' Grid.Column='1' HorizontalAlignment='Right' Command='{Binding MovePage3}' />
+				<Button Content='Back' Grid.Row='1' Grid.Column='0' HorizontalAlignment='Left' Command='{Binding MoveBack}' />
+		</Grid>
+</Page>

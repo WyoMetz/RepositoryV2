@@ -1,0 +1,49 @@
+﻿<Page x:Class="IDRAdministration.Views.UserAccountsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:IDRAdministration.ViewModels" mc:Ignorable="d" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="12" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" d:DesignHeight="400" d:DesignWidth="800" Title="UserAccountsView">
+		<Page.DataContext>
+				<local:UserAccountsViewModel />
+		</Page.DataContext>
+    <Grid>
+				<Rectangle Fill='{DynamicResource MaterialDesignPaper}' Opacity='0.6' />
+				<Grid Margin='10'>
+						<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+								<RowDefinition Height='10*' />
+								<RowDefinition Height='90*' />
+						</Grid.RowDefinitions>
+						<Grid Grid.Row='0'>
+								<Grid.ColumnDefinitions>
+										<ColumnDefinition Width='10*' />
+										<ColumnDefinition Width='90*' />
+								</Grid.ColumnDefinitions>
+								<materialDesign:PackIcon Kind='Search' MinHeight='35' MinWidth='35' HorizontalAlignment='Right' VerticalAlignment='Bottom' />
+								<TextBox materialDesign:HintAssist.Hint='Search' Grid.Column='1' materialDesign:HintAssist.IsFloating='True' FontSize='16' Text='{Binding Search, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}' />
+								<materialDesign:Snackbar MessageQueue='{Binding Message}' Grid.Column='1'/>
+						</Grid>
+						<TextBlock Text='If a User is experiencing Issues that may be Account related reset their account by clicking on the button next to their account name.' Grid.Column='1' VerticalAlignment='Center' Grid.RowSpan='2' FontSize='14' TextWrapping='Wrap' HorizontalAlignment='Center' />
+						<StackPanel Grid.Row='1' Margin='8'>
+								<StackPanel Orientation='Horizontal' TextBlock.FontSize='16'>
+										<TextBlock Text='User Name' Margin='4,4,8,4'/>
+										<TextBlock Text='ARUC' Margin='4,4,8,4'/>
+								</StackPanel>
+						<ListBox ItemsSource='{Binding Users}' SelectedItem='{Binding SelectedUser}'>
+								<ListBox.ItemTemplate>
+										<DataTemplate>
+												<StackPanel Orientation='Horizontal' TextBlock.FontSize='16'>
+																<TextBlock Text='{Binding UserName}' Margin='4,4,8,4' />
+																<TextBlock Text='{Binding Aruc}' Margin='4,4,8,4' />
+																<Button Content='Reset' Command='{Binding ResetUser}' Style="{StaticResource MaterialDesignRaisedAccentButton}" />
+												</StackPanel>
+										</DataTemplate>
+								</ListBox.ItemTemplate>
+						</ListBox>
+						</StackPanel>
+				</Grid>
+		</Grid>
+</Page>

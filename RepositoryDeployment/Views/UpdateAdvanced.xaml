@@ -1,0 +1,36 @@
+﻿<Page x:Class="RepositoryDeployment.Views.UpdateAdvanced"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:RepositoryDeployment.Views" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="16" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" Title="InformationView">
+		<Grid>
+				<Grid.RowDefinitions>
+						<RowDefinition Height='90*' />
+						<RowDefinition Height='10*' />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<TextBlock Text='Advanced Deployment Update' HorizontalAlignment='Center' FontSize='22' />
+				<materialDesign:PackIcon Kind='Warning' Foreground='{DynamicResource SecondaryAccentBrush}' MinHeight='55' MinWidth='55' />
+				<TextBlock Margin='8' Text='Please specify the locations of each of the Repository Systems. If the Database is maintained by another Unit please click Not Maintained to prevent the Repository from attempting to Update the Database. If you experience errors after the update and believe these are due to Database issues please contact the maintaining Unit.' TextWrapping='Wrap' HorizontalAlignment='Center' VerticalAlignment='Center' />
+				<TextBlock Text='Repository Deployment Locations' Grid.Column='1' HorizontalAlignment='Center' FontSize='22' />
+				<StackPanel Grid.Column='1' VerticalAlignment='Center' Margin='4' Background='{DynamicResource PrimaryHueDarkBrush}'>
+						<TextBlock Text='Deployment Locations' Margin='4' HorizontalAlignment='Center' />
+						<Separator Margin='4' />
+						<TextBox materialDesign:HintAssist.Hint='Database Location' Text='{Binding DatabaseLocation}' materialDesign:HintAssist.IsFloating='True' Margin='4' />
+						<Separator Margin='4' />
+						<CheckBox Content='Not Maintained' IsChecked='{Binding ExistingDatabase}' Margin='4' />
+						<Separator Margin='4' />
+						<TextBox Text='{Binding DocumentLocation}' materialDesign:HintAssist.Hint='Document Storage Location' materialDesign:HintAssist.IsFloating='True' Margin='4' />
+						<Separator Margin='4' />
+						<TextBox Text='{Binding ApplicationLocation}' materialDesign:HintAssist.Hint='Application Location' materialDesign:HintAssist.IsFloating='True' Margin='4' />
+						<Separator Margin='4' />
+						<CheckBox Content='Confirm Deployment' IsChecked='{Binding ConfirmChecked}' Margin='4,4,4,10' />
+				</StackPanel>
+				<Button Content='Continue' Grid.Row='1' Grid.Column='1' HorizontalAlignment='Right' Command='{Binding RunUpdate}' />
+				<Button Content='Back' Grid.Row='1' Grid.Column='0' HorizontalAlignment='Left' Command='{Binding MoveBack}' />
+		</Grid>
+</Page>

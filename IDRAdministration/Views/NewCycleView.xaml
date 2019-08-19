@@ -1,0 +1,107 @@
+﻿<Page x:Class="IDRAdministration.Views.NewCycleView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:IDRAdministration.ViewModels" mc:Ignorable="d" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="16" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" d:DesignHeight="400" d:DesignWidth="800" Title="NewCycleView">
+		<Page.DataContext>
+				<local:CycleReportViewModel />
+		</Page.DataContext>
+		<Page.Resources>
+				<BooleanToVisibilityConverter x:Key='BoolToVis' />
+		</Page.Resources>
+    <Grid>
+				<Rectangle Fill='{DynamicResource MaterialDesignPaper}' Opacity='0.6' />
+				<Grid Margin='10'>
+						<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition />
+						</Grid.RowDefinitions>
+						<StackPanel Margin='8'>
+								<TextBlock Text='Cycle Reports must be in CSV Format or the Upload will result in an error.' TextWrapping='Wrap' FontSize='16' />
+								<Button Content='Select Csv' Margin='8' Command='{Binding SelectCSV}'/>
+								<StackPanel Orientation='Horizontal' Margin='4'>
+										<TextBlock Text='Selected CSV: ' />
+										<TextBlock Text='{Binding FileName}' />
+								</StackPanel>
+						</StackPanel>
+						<StackPanel Margin='8' Grid.Column='1'>
+								<TextBlock Text='Cycle Statistics' FontSize='16' HorizontalAlignment='Center' />
+								<Separator />
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Number of new Diairies: ' />
+										<TextBlock Text='{Binding CycleDiaries}' />
+								</StackPanel>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Number of Certifiers Invovled: ' />
+										<TextBlock Text='{Binding CycleCertifiers}' />
+								</StackPanel>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Number of Preparers Involved: ' />
+										<TextBlock Text='{Binding CyclePreparers}' />
+								</StackPanel>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Number of Members Involved: ' />
+										<TextBlock Text='{Binding CycleMembers}' />
+								</StackPanel>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Number of New Marines Found: ' />
+										<TextBlock Text='{Binding CycleMarines}' />
+								</StackPanel>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Total Number of Transactions: ' />
+										<TextBlock Text='{Binding CycleTransactions}' />
+								</StackPanel>
+						</StackPanel>
+						<StackPanel Margin='8' Grid.Column='1' Grid.Row='1'>
+								<StackPanel Orientation='Horizontal' TextBlock.FontSize='12'>
+										<TextBlock Text='Repository Statistics' FontSize='16' HorizontalAlignment='Center' />
+										<TextBlock Text='ARUC: ' Margin='4' />
+										<ComboBox ItemsSource='{Binding CurrentArucs}' SelectedItem='{Binding CurrentAruc}' />
+										<TextBlock Text='Year: ' Margin='4' />
+										<ComboBox ItemsSource='{Binding CurrentYears}' SelectedItem='{Binding CurrentYear}' />
+								</StackPanel>
+								<Separator />
+								<ProgressBar IsIndeterminate='True' Visibility='{Binding Path=IsVisible, Converter={StaticResource BoolToVis}}' />
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Total Number of Diairies Uploaded: ' />
+										<TextBlock Text='{Binding RepositoryDiaries}' />
+								</StackPanel>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Last Cycle Uploaded: ' />
+										<TextBlock Text='{Binding LastCycle}' />
+								</StackPanel>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Total Number of Marines: ' />
+										<TextBlock Text='{Binding TotalMarines}' />
+								</StackPanel>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Total Number of Transactions: ' />
+										<TextBlock Text='{Binding TotalTransactions}' />
+								</StackPanel>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Total Number of Users: ' />
+										<TextBlock Text='{Binding TotalUsers}' />
+								</StackPanel>
+						</StackPanel>
+						<StackPanel Grid.Row='1' Margin='8'>
+								<TextBlock Text='After a CSV has been selected click Upload below to update the Document Repository. If the Cycle has already been Uploaded the button will not be active.' TextWrapping='Wrap' FontSize='16' />
+								<Button Content='Upload' Margin='8' Command='{Binding UploadCSV}' />
+						</StackPanel>
+				</Grid>
+				<Grid Visibility='{Binding Path=OverlayVisible, Converter={StaticResource BoolToVis}}'>
+						<Rectangle Fill='{DynamicResource MaterialDesignPaper}' Opacity='0.6' />
+						<StackPanel VerticalAlignment='Center' HorizontalAlignment='Center' Orientation='Horizontal'>
+								<ProgressBar IsIndeterminate='True' Style="{StaticResource MaterialDesignCircularProgressBar}" Margin='8'/>
+								<StackPanel>
+										<TextBlock Text='Please wait while the Cycle Uploads' />
+										<TextBlock Text='This can take several minutes based on the number of Diaries' />
+								</StackPanel>
+						</StackPanel>
+				</Grid>
+		</Grid>
+</Page>

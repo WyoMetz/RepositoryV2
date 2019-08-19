@@ -1,0 +1,160 @@
+﻿<Page x:Class="DocumentRepository.Views.MemberResearch"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:DocumentRepository.ViewModels" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="12" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" Title="MemberResearch">
+		<Page.DataContext>
+				<local:MemberResearchViewModel />
+		</Page.DataContext>
+		<Page.Resources>
+				<BooleanToVisibilityConverter x:Key='BoolToVis' />
+		</Page.Resources>
+		<Grid>
+				<Grid>
+				<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+								<RowDefinition Height='98*'/>
+								<RowDefinition Height='2*'/>
+						</Grid.RowDefinitions>
+						<ProgressBar Grid.Row='1' Grid.ColumnSpan='3' IsIndeterminate='True' Visibility='{Binding Path=IsVisible, Converter={StaticResource BoolToVis}}'/>
+						<Grid Margin='4'>
+								<Grid.RowDefinitions>
+										<RowDefinition Height='5*'/>
+										<RowDefinition Height='95*'/>
+								</Grid.RowDefinitions>
+								<Grid Margin='0,0,0,8'>
+										<Grid.ColumnDefinitions>
+												<ColumnDefinition Width='40*'/>
+												<ColumnDefinition Width='20*'/>
+												<ColumnDefinition Width='60*'/>
+										</Grid.ColumnDefinitions>
+										<TextBlock Text='Select Marine Below' FontSize='16' VerticalAlignment='Bottom' HorizontalAlignment='Left' Margin='12,0,0,0'/>
+										<materialDesign:PackIcon Kind='Search' Grid.Row='1' Grid.Column='1' MinHeight='35' MinWidth='35' HorizontalAlignment='Right' VerticalAlignment='Bottom' />
+										<TextBox materialDesign:HintAssist.Hint='Search' Grid.Row='1' Grid.Column='2' materialDesign:HintAssist.IsFloating='True' FontSize='12' Text='{Binding MarineSearch, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}' />
+								</Grid>
+								<DataGrid Grid.Row='1' ItemsSource='{Binding ListMarines}' SelectedItem='{Binding SelectedMarine}' AutoGenerateColumns='False'>
+										<DataGrid.Columns>
+												<DataGridTextColumn Header='EDIPI' Binding='{Binding EDIPI}' />
+												<DataGridTextColumn Header='Last Name' Binding='{Binding LastName}' />
+												<DataGridTextColumn Header='Rank' Binding='{Binding Rank}' />
+												<DataGridTextColumn Header='First Name' Binding='{Binding FirstName}' />
+												<DataGridTextColumn Header='MI' Binding='{Binding MI}' />
+										</DataGrid.Columns>
+								</DataGrid>
+						</Grid>
+						<Grid Margin='4' Grid.Column='1'>
+								<Grid.RowDefinitions>
+										<RowDefinition Height='5*' />
+										<RowDefinition Height='75*' />
+										<RowDefinition Height='20*' />
+								</Grid.RowDefinitions>
+								<Grid Margin='0,0,0,8'>
+										<Grid.ColumnDefinitions>
+												<ColumnDefinition Width='40*' />
+												<ColumnDefinition Width='20*' />
+												<ColumnDefinition Width='60*' />
+										</Grid.ColumnDefinitions>
+										<TextBlock Text='Transaction Research' FontSize='16' VerticalAlignment='Bottom' HorizontalAlignment='Left' Margin='12,0,0,0'/>
+										<materialDesign:PackIcon Kind='Search' Grid.Row='1' Grid.Column='1' MinHeight='35' MinWidth='35' HorizontalAlignment='Right' VerticalAlignment='Bottom' />
+										<TextBox materialDesign:HintAssist.Hint='Search' Grid.Row='1' Grid.Column='2' materialDesign:HintAssist.IsFloating='True' FontSize='12' Text='{Binding TransactionSearch, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}' />
+								</Grid>
+								<DataGrid Grid.Row='1' ItemsSource='{Binding Transactions}' SelectedItem='{Binding SelectedTransaction}' AutoGenerateColumns='False' CanUserAddRows='False'>
+										<DataGrid.RowDetailsTemplate>
+												<DataTemplate>
+														<StackPanel>
+																<StackPanel Orientation='Horizontal'>
+																		<TextBlock Text='Certifier: ' />
+																		<TextBlock Text='{Binding Certifier.LastName}' Margin='0,0,4,0' />
+																		<TextBlock Text='{Binding Certifier.Rank}' Margin='0,0,4,0' />
+																		<TextBlock Text='{Binding Certifier.FirstName}' Margin='0,0,4,0' />
+																		<TextBlock Text='{Binding Certifier.EDIPI}' Margin='0,0,4,0' />
+																</StackPanel>
+																<StackPanel Orientation='Horizontal'>
+																		<TextBlock Text='Preparer: ' />
+																		<TextBlock Text='{Binding Preparer.LastName}' Margin='0,0,4,0' />
+																		<TextBlock Text='{Binding Preparer.Rank}' Margin='0,0,4,0' />
+																		<TextBlock Text='{Binding Preparer.FirstName}' Margin='0,0,4,0' />
+																		<TextBlock Text='{Binding Preparer.EDIPI}' Margin='0,0,4,0' />
+																</StackPanel>
+																<StackPanel Orientation='Horizontal'>
+																		<TextBlock Text='Member: ' />
+																		<TextBlock Text='{Binding Member.LastName}' Margin='0,0,4,0' />
+																		<TextBlock Text='{Binding Member.Rank}' Margin='0,0,4,0' />
+																		<TextBlock Text='{Binding Member.FirstName}' Margin='0,0,4,0' />
+																		<TextBlock Text='{Binding Member.EDIPI}' Margin='0,0,4,0' />
+																</StackPanel>
+																<StackPanel Orientation='Horizontal'>
+																		<TextBlock Text='Transaction Error Description: ' />
+																		<TextBlock Text='{Binding ErrorDescription}' />
+																</StackPanel>
+																<StackPanel Orientation='Horizontal'>
+																				<TextBlock Text='History Statement: ' />
+																				<TextBlock Text='{Binding HistoryStatement}' />
+																		</StackPanel>
+																</StackPanel>
+												</DataTemplate>
+										</DataGrid.RowDetailsTemplate>
+										<DataGrid.Columns>
+												<DataGridTextColumn Header='TTC' Binding='{Binding TTC}' />
+												<DataGridTextColumn Header='TTS' Binding='{Binding TTS}' />
+												<DataGridTextColumn Header='Error Code' Binding='{Binding TransactionErrorCode}' />
+												<DataGridTextColumn Header='English Statement' Binding='{Binding EnglishStatement}' />
+										</DataGrid.Columns>
+								</DataGrid>
+								<GroupBox Header='Diary Information' Grid.Row='2' Margin='6' Background='{DynamicResource MaterialDesignPaper}'>
+										<Grid>
+										<StackPanel Orientation='Horizontal'>
+												<StackPanel Margin='4'>
+														<TextBlock Text='Diary Number' />
+														<TextBlock Text='{Binding UnitDiary.Number}' />
+												</StackPanel>
+												<StackPanel Margin='4'>
+														<TextBlock Text='Cycle Number' />
+														<TextBlock Text='{Binding UnitDiary.CycleNumber}' />
+												</StackPanel>
+												<StackPanel Margin='4'>
+														<TextBlock Text='Diary Year' />
+																<TextBlock Text='{Binding UnitDiary.Year}' />
+														</StackPanel>
+												</StackPanel>
+												<Button Content='View Source Docs' VerticalAlignment='Bottom' Style="{StaticResource MaterialDesignRaisedAccentButton}" Command='{Binding ViewDiary}'/>
+										</Grid>
+								</GroupBox>
+						</Grid>
+						<Grid Grid.Column='2' Margin='4'>
+								<Grid.RowDefinitions>
+										<RowDefinition Height='5*' />
+										<RowDefinition Height='95*' />
+								</Grid.RowDefinitions>
+								<Grid Margin='0,0,0,8'>
+										<Grid.ColumnDefinitions>
+												<ColumnDefinition Width='40*' />
+												<ColumnDefinition Width='20*' />
+												<ColumnDefinition Width='60*' />
+										</Grid.ColumnDefinitions>
+										<TextBlock Text='Documentation' FontSize='16' VerticalAlignment='Bottom' HorizontalAlignment='Left' Margin='12,0,0,0'/>
+										<materialDesign:PackIcon Kind='Search' Grid.Row='1' Grid.Column='1' MinHeight='35' MinWidth='35' HorizontalAlignment='Right' VerticalAlignment='Bottom' />
+										<TextBox materialDesign:HintAssist.Hint='Search' Grid.Row='1' Grid.Column='2' materialDesign:HintAssist.IsFloating='True' FontSize='12' Text='{Binding DocumentSearch, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}' />
+								</Grid>
+								<DataGrid Grid.Row='1' ItemsSource='{Binding MarineDocuments}' SelectedItem='{Binding SelectedDocument}' AutoGenerateColumns='False' CanUserAddRows='False'>
+										<DataGrid.Columns>
+												<DataGridTextColumn Header='Document Type' Binding='{Binding DocType}' />
+												<DataGridTextColumn Header='Uploaded On' Binding='{Binding UploadedOn}' />
+												<DataGridTextColumn Header='Uploaded By' Binding='{Binding UploadedBy}' />
+												<DataGridTemplateColumn>
+														<DataGridTemplateColumn.CellTemplate>
+																<DataTemplate>
+																		<Button Content='View Documents' Command='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.ViewDocument}' Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
+																</DataTemplate>
+														</DataGridTemplateColumn.CellTemplate>
+												</DataGridTemplateColumn>
+										</DataGrid.Columns>
+								</DataGrid>
+						</Grid>
+				</Grid>
+		</Grid>
+</Page>

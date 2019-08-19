@@ -1,0 +1,2 @@
+If this is a ShareDrive location that is mapped to a drive letter (such as Z:\ShareFolder) then all users who install the Document Repository will have to map to the same Drive letter location. If this is an installation on a stand alone computer such as a terminal or for personal use then the following can be ignored.
+It is recommended that the Repository Location be Deployed to the fully qualified ShareDrive location. If you are unsure of how to find the full pathway please press continue.

@@ -1,0 +1,64 @@
+﻿<Page x:Class="DocumentRepository.Views.DocumentResearchView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:DocumentRepository.ViewModels" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="12" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" Title="DocumentResearchView">
+		<Page.DataContext>
+				<local:DocumentResearchViewModel />
+		</Page.DataContext>
+    <Grid>
+				<Rectangle Fill='{DynamicResource MaterialDesignPaper}' Opacity='0.6' />
+				<Grid>
+						<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<Grid>
+								<Grid.RowDefinitions>
+										<RowDefinition Height='10*' />
+										<RowDefinition Height='90*' />
+								</Grid.RowDefinitions>
+								<StackPanel Orientation='Horizontal'>
+										<TextBlock Text='Documentation' Grid.ColumnSpan='2' VerticalAlignment='Center' HorizontalAlignment='Center' />
+										<materialDesign:PackIcon Kind='Search' Grid.Row='1' MinHeight='35' MinWidth='35' HorizontalAlignment='Right' VerticalAlignment='Bottom' />
+										<TextBox materialDesign:HintAssist.Hint='Search' Grid.Row='1' Grid.Column='1' materialDesign:HintAssist.IsFloating='True' FontSize='12' Text='{Binding DocumentSearch, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}' />
+								</StackPanel>
+								<DataGrid Grid.Row='1' ItemsSource='{Binding MarineDocuments}' SelectedItem='{Binding SelectedDocument}' AutoGenerateColumns='False' CanUserAddRows='False'>
+								<DataGrid.Columns>
+												<DataGridTemplateColumn>
+														<DataGridTemplateColumn.CellTemplate>
+																<DataTemplate>
+																		<TextBlock Text='{Binding DocType}' />
+																</DataTemplate>
+														</DataGridTemplateColumn.CellTemplate>
+														<DataGridTemplateColumn.HeaderTemplate>
+																<DataTemplate>
+																		<Grid>
+																				<Grid.RowDefinitions>
+																						<RowDefinition />
+																						<RowDefinition />
+																				</Grid.RowDefinitions>
+																				<TextBlock Text='Document Type' />
+																				<ComboBox Grid.Row='1' ItemsSource='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DocumentTypes}' SelectedValue='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Filter}' />
+																		</Grid>
+																</DataTemplate>
+														</DataGridTemplateColumn.HeaderTemplate>
+												</DataGridTemplateColumn>
+												<DataGridTextColumn Header='Marine EDIPI' Binding='{Binding Document.Marine.EDIPI}' />
+												<DataGridTextColumn Header='Marine Last Name' Binding='{Binding Document.Marine.LastName}' />
+												<DataGridTextColumn Header='Marine FirstName' Binding='{Binding Document.Marine.FirstName}' />
+												<DataGridTextColumn Header='Uploaded On' Binding='{Binding UploadedOn}' />
+										<DataGridTextColumn Header='Uploaded By' Binding='{Binding UploadedBy}' />
+										<DataGridTemplateColumn>
+												<DataGridTemplateColumn.CellTemplate>
+														<DataTemplate>
+																<Button Content='View Documents' Command='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.ViewDocument}' />
+														</DataTemplate>
+												</DataGridTemplateColumn.CellTemplate>
+										</DataGridTemplateColumn>
+								</DataGrid.Columns>
+						</DataGrid>
+						</Grid>
+				</Grid>
+		</Grid>
+</Page>

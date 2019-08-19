@@ -1,0 +1,196 @@
+﻿<Page x:Class="DocumentRepository.Views.TransactionResearch"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DocumentRepository.ViewModels" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="16" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" Title="MemberResearch">
+		<Page.DataContext>
+				<local:TransactionResearchViewModel />
+		</Page.DataContext>
+		<Page.Resources>
+				<BooleanToVisibilityConverter x:Key='BoolToVis' />
+		</Page.Resources>
+		<Grid>
+				<Grid Margin='4'>
+						<Grid.ColumnDefinitions>
+								<ColumnDefinition Width='30*' />
+								<ColumnDefinition Width='70*' />
+						</Grid.ColumnDefinitions>
+						<ProgressBar Grid.ColumnSpan='2' IsIndeterminate='True' VerticalAlignment='Bottom' Visibility='{Binding Path=IsVisible, Converter={StaticResource BoolToVis}}' />
+						<materialDesign:Card Margin='4,40,4,4' HorizontalAlignment='Center'>
+								<GroupBox Background='{DynamicResource MaterialDesignPaper}' Margin='4' materialDesign:ShadowAssist.ShadowDepth='Depth3'>
+										<GroupBox.Header>
+												<StackPanel Orientation='Horizontal'>
+														<materialDesign:PackIcon Kind='Search' MinHeight='26' MinWidth='26'/>
+														<TextBlock Text='Research' Margin='4' />
+												</StackPanel>
+										</GroupBox.Header>
+										<StackPanel Margin='4'>
+												<Expander IsExpanded='True'>
+														<Expander.Header>
+																<TextBlock Text='Marine Transactions' />
+														</Expander.Header>
+														<StackPanel>
+																<StackPanel Orientation='Horizontal'>
+																		<materialDesign:PackIcon Kind='Search' MinHeight='26' MinWidth='26' VerticalAlignment='Bottom' />
+																		<TextBox materialDesign:HintAssist.Hint='Search' materialDesign:HintAssist.IsFloating='True' MinWidth='120' Text='{Binding Search}' />
+																		<Button Style="{DynamicResource MaterialDesignFlatButton}">
+																				<Button.Content>
+																						<materialDesign:PackIcon Kind='Send' />
+																				</Button.Content>
+																		</Button>
+																</StackPanel>
+																<Grid>
+																		<Grid.RowDefinitions>
+																				<RowDefinition Height='100*' />
+																		</Grid.RowDefinitions>
+																<DataGrid AutoGenerateColumns='False' CanUserAddRows='False' ItemsSource='{Binding MarineList}' SelectedItem='{Binding SelectedMarine}'>
+																		<DataGrid.Columns>
+																				<DataGridTextColumn Header='EDIPI' Binding='{Binding EDIPI}' />
+																				<DataGridTextColumn Header='Last Name' Binding='{Binding LastName}' />
+																				<DataGridTextColumn Header='Rank' Binding='{Binding Rank}' />
+																				<DataGridTextColumn Header='First Name' Binding='{Binding FirstName}' />
+																				<DataGridTextColumn Header='MI' Binding='{Binding MI}' />
+																		</DataGrid.Columns>
+																</DataGrid>
+																</Grid>
+														</StackPanel>
+												</Expander>
+												<Separator Margin='4' />
+												<Expander Margin='4' IsExpanded='False'>
+														<Expander.Header>
+																<TextBlock Text='TTC Research' />
+														</Expander.Header>
+														<StackPanel>
+																<TextBlock Text="Searching for specific TTC's may take several minutes." FontSize='12' />
+																<StackPanel Orientation='Horizontal' HorizontalAlignment='Stretch'>
+																		<TextBox materialDesign:HintAssist.Hint='TTC' materialDesign:HintAssist.IsFloating='True' Margin='4' Text='{Binding TransactionSearch.TTC, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}'>
+																				<TextBox.InputBindings>
+																						<KeyBinding Key="Enter" Command="{Binding GetTransactions}" />
+																						<KeyBinding Key="Return" Command="{Binding GetTransactions}" />
+																				</TextBox.InputBindings>
+																		</TextBox>
+																		<TextBox materialDesign:HintAssist.Hint='TTS' materialDesign:HintAssist.IsFloating='True' Margin='4' Text='{Binding TransactionSearch.TTS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}'>
+																				<TextBox.InputBindings>
+																						<KeyBinding Key="Enter" Command="{Binding GetTransactions}" />
+																						<KeyBinding Key="Return" Command="{Binding GetTransactions}" />
+																				</TextBox.InputBindings>
+																		</TextBox>
+																		<TextBox materialDesign:HintAssist.Hint='Error Code' materialDesign:HintAssist.IsFloating='True' Margin='4' Text='{Binding TransactionSearch.TransactionErrorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}'>
+																				<TextBox.InputBindings>
+																						<KeyBinding Key="Enter" Command="{Binding GetTransactions}" />
+																						<KeyBinding Key="Return" Command="{Binding GetTransactions}" />
+																				</TextBox.InputBindings>
+																		</TextBox>
+																		<Button Style="{DynamicResource MaterialDesignFlatButton}" Command='{Binding GetTransactions}'>
+																				<Button.Content>
+																						<materialDesign:PackIcon Kind='Send' />
+																				</Button.Content>
+																		</Button>
+																</StackPanel>
+														</StackPanel>
+												</Expander>
+										</StackPanel>
+								</GroupBox>
+						</materialDesign:Card>
+						<materialDesign:Card Grid.Column='1' Margin='4,40,4,4'>
+								<Grid>
+										<Grid.RowDefinitions>
+												<RowDefinition Height='10*' />
+												<RowDefinition Height='90*' />
+												<RowDefinition Height='10*' />
+										</Grid.RowDefinitions>
+										<Button Content='Get Report' Margin='4,4,4,8' Grid.Row='2' Command='{Binding GetReport}'/>
+										<TextBlock Text='Transactions' Margin='15,4,4,4' Grid.Row='0' VerticalAlignment='Center'/>
+										<StackPanel Orientation='Horizontal' HorizontalAlignment='Right' VerticalAlignment='Center' Margin='4,4,15,4'>
+												<TextBlock Text='Number of Results: ' />
+												<TextBlock Text='{Binding ResultNumber}' />
+										</StackPanel>
+												<DataGrid AutoGenerateColumns='False' CanUserAddRows='False' ItemsSource='{Binding TransactionList}' SelectedItem='{Binding SelectedTransaction}' Grid.Row='1' Margin='4'>
+												<DataGrid.RowDetailsTemplate>
+														<DataTemplate>
+																<StackPanel>
+																				<StackPanel Orientation='Horizontal' Margin='4'>
+																						<TextBlock Text='Certifier: ' />
+																						<TextBlock Text='{Binding Certifier.EDIPI}' Margin='0,0,4,0' />
+																						<TextBlock Text='{Binding Certifier.Rank}' Margin='0,0,4,0' />
+																						<TextBlock Text='{Binding Certifier.LastName}' Margin='0,0,4,0' />
+																				</StackPanel>
+																				<StackPanel Orientation='Horizontal' Margin='4'>
+																						<TextBlock Text='Preparer: ' />
+																						<TextBlock Text='{Binding Preparer.EDIPI}' Margin='0,0,4,0' />
+																						<TextBlock Text='{Binding Preparer.Rank}' Margin='0,0,4,0' />
+																						<TextBlock Text='{Binding Preparer.LastName}' Margin='0,0,4,0' />
+																				</StackPanel>
+																				<StackPanel Orientation='Horizontal' Margin='4'>
+																						<TextBlock Text='Member: ' />
+																						<TextBlock Text='{Binding Member.EDIPI}' Margin='0,0,4,0' />
+																						<TextBlock Text='{Binding Member.LastName}' Margin='0,0,4,0' />
+																						<TextBlock Text='{Binding Member.Rank}' Margin='0,0,4,0' />
+																						<TextBlock Text='{Binding Member.FirstName}' Margin='0,0,4,0' />
+																				</StackPanel>
+																				<StackPanel Orientation='Horizontal' Margin='4'>
+																						<TextBlock Text='History Statment: ' />
+																						<TextBlock Text='{Binding HistoryStatement}' Margin='0,0,4,0' />
+																				</StackPanel>
+																				<StackPanel Orientation='Horizontal' Margin='4'>
+																						<TextBlock Text='Error Description: ' />
+																						<TextBlock Text='{Binding ErrorDescription}' Margin='0,0,4,0' />
+																				</StackPanel>
+																				<StackPanel Orientation='Horizontal' Margin='4'>
+																						<TextBlock Text='Required Documentation: ' />
+																						<TextBlock Text='{Binding DocumentRequired}' Margin='0,0,4,0' />
+																				</StackPanel>
+																		</StackPanel>
+														</DataTemplate>
+												</DataGrid.RowDetailsTemplate>
+												<DataGrid.Columns>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.Header>
+																		<TextBlock Text='Diary' />
+																</DataGridTemplateColumn.Header>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<Button Command='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.ViewDoc}' Style="{DynamicResource MaterialDesignFlatButton}">
+																						<Button.Content>
+																								<StackPanel Orientation='Horizontal'>
+																										<TextBlock Text='{Binding DiaryNumber}' />
+																										<materialDesign:PackIcon Kind='Paperclip' />
+																								</StackPanel>
+																						</Button.Content>
+																				</Button>
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTextColumn Header='TTC' Binding='{Binding TTC}' />
+														<DataGridTextColumn Header='TTS' Binding='{Binding TTS}' />
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<TextBlock Text='{Binding Branch}' />
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+																<DataGridTemplateColumn.HeaderTemplate>
+																		<DataTemplate>
+																				<Grid>
+																						<Grid.RowDefinitions>
+																								<RowDefinition />
+																								<RowDefinition />
+																						</Grid.RowDefinitions>
+																						<TextBlock Text='Branch' />
+																						<ComboBox Grid.Row='1' ItemsSource='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Branches}' SelectedValue='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Filter}' />
+																				</Grid>
+																		</DataTemplate>
+																</DataGridTemplateColumn.HeaderTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTextColumn Header='EDIPI' Binding='{Binding Member.EDIPI}' />
+														<DataGridTextColumn Header='Last Name' Binding='{Binding Member.LastName}' />
+														<DataGridTextColumn Header='Error Code' Binding='{Binding TransactionErrorCode}' />
+														<DataGridTextColumn Header='English Statement' Binding='{Binding EnglishStatement}' />
+												</DataGrid.Columns>
+										</DataGrid>
+								</Grid>
+						</materialDesign:Card>
+				</Grid>
+    </Grid>
+</Page>

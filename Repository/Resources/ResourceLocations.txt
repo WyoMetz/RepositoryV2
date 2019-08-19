@@ -1,0 +1,4 @@
+﻿Database;D:\IDR Test Resource Files\NewInsertTest\Repository
+FileRepository;D:\IDR Test Resource Files\NewInsertTest\Repository
+Application;D:\IDR Test Resource Files\DeploymentTest\IDR\Applications\DocumentRepository
+Administration;D:\IDR Test Resource Files\DeploymentTest\IDR\Applications\IDRAdministration

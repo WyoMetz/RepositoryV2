@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class Class1
+    public interface IReportable
     {
+        string CsvOutput();
+        string CsvHeader();
+        IWritable GetWritable();
     }
 }

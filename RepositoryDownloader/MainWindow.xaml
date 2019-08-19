@@ -1,0 +1,50 @@
+﻿<Window x:Class="RepositoryDownloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RepositoryDownloader"
+        mc:Ignorable="d"
+        Title="Download Repository Applications" Height="350" Width="300" ResizeMode="NoResize">
+    <Window.DataContext>
+        <local:DownloaderViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Rectangle Fill="SteelBlue"/>
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="40*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Repository Installer" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22"/>
+            <StackPanel Grid.Row="1" Margin='4'>
+                <Separator/>
+                <TextBlock Text="Click below to download and install the Document Repository." FontSize="16" TextWrapping="Wrap" HorizontalAlignment="Center"/>
+                <Separator/>
+                <TextBlock HorizontalAlignment="Center" Text="Please ensure that any version of the Document Repository that you have is closed or the download will fail" TextWrapping="Wrap"/>
+								<Separator />
+								<TextBlock Text='Upon Completion a Shortcut to the application will be added to your Desktop' TextWrapping='Wrap' />
+						</StackPanel>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Button Content="Download" Grid.Row="0" Margin="16" Command="{Binding Download}"/>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+										<StackPanel Orientation='Horizontal'>
+                    <TextBlock Text="Progress: " FontSize="16" VerticalAlignment="Center"/>
+												<TextBlock Text='{Binding DownloadProgress}' FontSize="16" VerticalAlignment='Center'/>
+												<TextBlock Text='%' FontSize="16" VerticalAlignment='Center' />
+										</StackPanel>
+										<ProgressBar Grid.Row="1" Margin="0,4,0,16" Value="{Binding DownloadProgress}"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
