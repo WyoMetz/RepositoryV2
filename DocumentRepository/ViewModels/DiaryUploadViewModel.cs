@@ -1,5 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Repository;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -300,6 +301,8 @@ namespace DocumentRepository.ViewModels
         public async void ExecuteUpload()
         {
             SelectedDiary.UploadLocation = await new FileOperation().CopyFile(SelectedDiary);
+            SelectedDiary.UploadedOn = DateTime.Now;
+            SelectedDiary.UploadedBy = AppSettings.User;
             new Database().UpdateEntry(SelectedDiary);
             Message = new SnackbarMessageQueue();
             Message.Enqueue($"Document for Diary {SelectedDiary.Number} has been uploaded.");

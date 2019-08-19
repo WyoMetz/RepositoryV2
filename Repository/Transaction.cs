@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Repository
 {
-    public class Transaction : BaseReportable, IReportable, IViewable, ITransactable
+    public class Transaction : BaseReportable, IReportable, IViewable, ITransactable, IStorable
     {
         public Marine Certifier { get; set; }
         public Marine Member { get; set; }
@@ -30,6 +31,7 @@ namespace Repository
         public int BatchNumber { get; set; }
         public DateTime UpdateDate { get; set; }
         public string UploadLocation { get; set; }
+        public string CurrentFilePath { get; set; }
 
         public override string ToString()
         {
@@ -189,7 +191,7 @@ namespace Repository
             }
             catch(Exception ex)
             {
-                MessageBox.Show("An Error ocurred reading the Database: " + ex.Message.ToString(), "Database Read Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("An Error ocurred reading the Transaction Database: " + ex.Message.ToString(), "Database Read Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return transactions;
         }
@@ -315,6 +317,12 @@ namespace Repository
         public string Delete()
         {
             throw new NotImplementedException();
+        }
+
+        public string FileStoragePath()
+        {
+            string fileName = Path.GetFileName(CurrentFilePath);
+            return $@"{ARUC}\{DiaryYear}\{DiaryNumber}\{Member.EDIPI}.{TTC}.{TTS}.{fileName}";
         }
     }
 }

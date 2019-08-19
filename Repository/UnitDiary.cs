@@ -23,6 +23,7 @@ namespace Repository
         public string UploadedBy { get; set; }
         public DateTime UploadedOn { get; set; }
         public DateTime ReportDate { get; set; }
+        public bool Confirmed { get; set; }
         public double WaitTime { get { return Math.Round((DateTime.Now - ReportDate).TotalDays); } }
 
         public string CurrentFilePath { get; set; }
@@ -40,7 +41,7 @@ namespace Repository
                     {
                         while (reader.Read())
                         {
-                            object[] values = cleanInput(reader, 13);
+                            object[] values = cleanInput(reader, 14);
                             DateTime parseDate;
                             DateTime.TryParse(values[9].ToString(), out parseDate);
                             unitDiaries.Add(new UnitDiary
@@ -57,7 +58,8 @@ namespace Repository
                                 UploadedOn = parseDate,
                                 Uploaded = bool.Parse(values[10].ToString()),
                                 ReportDate = DateTime.Parse(values[11].ToString()),
-                                Certifier = values[12].ToString()
+                                Certifier = values[12].ToString(),
+                                Confirmed = bool.Parse(values[13].ToString())
                             });
                         }
                     }
@@ -77,7 +79,7 @@ namespace Repository
             foreach (var year in Years)
             {
                 UnitDiary diary = new UnitDiary { Aruc = AppSettings.Aruc, Year = year };
-                IList<UnitDiary> Temp = await GetDiaries(@"SELECT DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Uploadlocation, UploadedBy, UploadedOn, Uploaded, ReportDate, Certifier FROM Diaries WHERE Uploaded = 'False' ORDER BY DiaryNumber ASC;", diary);
+                IList<UnitDiary> Temp = await GetDiaries(@"SELECT DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Uploadlocation, UploadedBy, UploadedOn, Uploaded, ReportDate, Certifier, Confirmed FROM Diaries WHERE Uploaded = 'False' ORDER BY DiaryNumber ASC;", diary);
                 if (Temp != null)
                 {
                     foreach (var item in Temp)
@@ -94,22 +96,29 @@ namespace Repository
             UnitDiary diary = new UnitDiary { Aruc = AppSettings.Aruc, Year = AppSettings.Year };
             IList<int> Years = await new Database().GetYears();
             IList<UnitDiary> Diaries = new List<UnitDiary>();
-            Diaries = await GetDiaries(@"SELECT DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Uploadlocation, UploadedBy, UploadedOn, Uploaded, ReportDate, Certifier FROM Diaries WHERE Uploaded = 'True' ORDER BY DiaryNumber ASC;", diary);
+            Diaries = await GetDiaries(@"SELECT DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Uploadlocation, UploadedBy, UploadedOn, Uploaded, ReportDate, Certifier, Confirmed FROM Diaries WHERE Uploaded = 'True' ORDER BY DiaryNumber ASC;", diary);
             return Diaries;
         }
 
         public async Task<IList<UnitDiary>> GetAll()
         {
             UnitDiary diary = new UnitDiary { Aruc = AppSettings.Aruc, Year = AppSettings.Year };
-            IList<UnitDiary> Temp = await GetDiaries(@"SELECT DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Uploadlocation, UploadedBy, UploadedOn, Uploaded, ReportDate, Certifier FROM Diaries ORDER BY DiaryNumber ASC;", diary);
+            IList<UnitDiary> Temp = await GetDiaries(@"SELECT DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Uploadlocation, UploadedBy, UploadedOn, Uploaded, ReportDate, Certifier, Confirmed FROM Diaries ORDER BY DiaryNumber ASC;", diary);
             return Temp;
         }
 
         public async Task<UnitDiary> GetDiary(Transaction transaction)
         {
             UnitDiary diary = new UnitDiary { Aruc = transaction.ARUC, Year = transaction.DiaryYear };
-            IList<UnitDiary> unitDiaries = await GetDiaries($@"SELECT DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Uploadlocation, UploadedBy, UploadedOn, Uploaded, ReportDate, Certifier FROM Diaries WHERE DiaryNumber = '{transaction.DiaryNumber}' ORDER BY DiaryNumber ASC;", diary);
+            IList<UnitDiary> unitDiaries = await GetDiaries($@"SELECT DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Uploadlocation, UploadedBy, UploadedOn, Uploaded, ReportDate, Certifier, Confirmed FROM Diaries WHERE DiaryNumber = '{transaction.DiaryNumber}' ORDER BY DiaryNumber ASC;", diary);
             return unitDiaries.FirstOrDefault();
+        }
+
+        public async Task<IList<UnitDiary>> GetUnconfirmedDiaries()
+        {
+            UnitDiary diary = new UnitDiary { Aruc = AppSettings.Aruc, Year = AppSettings.Year };
+            IList<UnitDiary> unitDiaries = await GetDiaries($@"SELECT DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Uploadlocation, UploadedBy, UploadedOn, Uploaded, ReportDate, Certifier, Confirmed FROM Diaries WHERE Uploaded = 'True' AND Confirmed = 'False' ORDER BY DiaryNumber ASC;", diary);
+            return unitDiaries;
         }
 
         public override string ToString()
@@ -124,7 +133,7 @@ namespace Repository
 
         public string Update()
         {
-            return $"UPDATE Diaries SET Uploaded = 'True', UploadLocation = '{UploadLocation}', UploadedBy = '{AppSettings.User}', UploadedOn = '{DateTime.Now}' WHERE DiaryNumber = '{Number}';";
+            return $"UPDATE Diaries SET Uploaded = 'True', UploadLocation = '{UploadLocation}', UploadedBy = '{UploadedBy}', UploadedOn = '{UploadedOn}', Confirmed = '{Confirmed}' WHERE DiaryNumber = '{Number}';";
         }
 
         public string Delete()

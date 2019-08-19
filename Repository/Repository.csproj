@@ -63,10 +63,14 @@
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
     <Compile Include="BaseReportable.cs" />
+    <Compile Include="Batch.cs" />
+    <Compile Include="Comment.cs" />
     <Compile Include="CSVCollection.cs" />
     <Compile Include="CsvInsert.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Documentation.cs" />
+    <Compile Include="ESRInsert.cs" />
+    <Compile Include="ESRTransaction.cs" />
     <Compile Include="FileOperation.cs" />
     <Compile Include="FileWriter.cs" />
     <Compile Include="IDeployable.cs" />
@@ -77,6 +81,7 @@
     <Compile Include="IWritable.cs" />
     <Compile Include="Marine.cs" />
     <Compile Include="MarineDiaries.cs" />
+    <Compile Include="PinCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="TransactionErrorText.cs" />
