@@ -24,8 +24,6 @@ namespace Repository
         public double ApproverWait { get { return Math.Round((DateTime.Now - ApproverDate).TotalDays); } }
         private string UpdateText { get; set; }
 
-        ESRTransaction transaction = new ESRTransaction { Transaction = new Transaction { ARUC = AppSettings.Aruc, DiaryYear = AppSettings.Year } };
-
         public string Create()
         {
             throw new NotImplementedException();
@@ -33,7 +31,7 @@ namespace Repository
 
         public string DatabaseConnection()
         {
-            return $@"{Transaction.ARUC}\{Transaction.DiaryYear}\ESR.db";
+            return $@"{AppSettings.Aruc}\{AppSettings.Year}\ESR.db";
         }
 
         public string Delete()
@@ -61,7 +59,7 @@ namespace Repository
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($@"UPDATE ESRTransactions SET NeedsConfirmed = 'False', IsRejected = 'True'");
-            if(DateTime.Now <= RejectDate)
+            if(DateTime.Now <= RejectDate || RejectDate == null)
             {
                 builder.Append($@", RejectDate = '{DateTime.Now}");
             }
@@ -95,7 +93,7 @@ namespace Repository
             new Database(this).UpdateEntry(this);
         }
 
-        public void RemoveFromBatch(Batch batch)
+        public void RemoveFromBatch()
         {
             UpdateText = $@"UPDATE ESRTransactions SET BatchID = '0' WHERE ID = '{ID}';";
             new Database(this).UpdateEntry(this);
@@ -119,31 +117,31 @@ namespace Repository
         public async Task<IList<ESRTransaction>> GetNotBatched()
         {
             string Command = SelectBase().Append($@"WHERE BatchID = '0' ORDER BY DiaryNumber ASC;").ToString();
-            return await GetTransactionsAsync(Command, transaction);
+            return await GetTransactionsAsync(Command);
         }
 
         public async Task<IList<ESRTransaction>> GetBatchTransactions(Batch batch)
         {
             string Command = SelectBase().Append($@"WHERE BatchID = '{batch.ID}' ORDER BY Member ASC;").ToString();
-            return await GetTransactionsAsync(Command, transaction);
+            return await GetTransactionsAsync(Command);
         }
 
         public async  Task<IList<ESRTransaction>> GetRejectedTransactions()
         {
             string Command = SelectBase().Append($@"WHERE IsRejected = 'True' ORDER BY DiaryNumber ASC;").ToString();
-            return await GetTransactionsAsync(Command, transaction);
+            return await GetTransactionsAsync(Command);
         }
 
         public async Task<IList<ESRTransaction>> GetNeedsConfirmedTransactions()
         {
             string Command = SelectBase().Append($@"WHERE NeedsConfirmed = 'True' ORDER BY DiaryNumber ASC;").ToString();
-            return await GetTransactionsAsync(Command, transaction);
+            return await GetTransactionsAsync(Command);
         }
 
         public async Task<IList<ESRTransaction>> GetCompleteTransactions()
         {
             string Command = SelectBase().Append($@"WHERE Complete = 'True' ORDER BY DiaryNumber ASC;").ToString();
-            return await GetTransactionsAsync(Command, transaction);
+            return await GetTransactionsAsync(Command);
         }
 
         private StringBuilder SelectBase()
@@ -183,16 +181,16 @@ namespace Repository
                                     Complete,
                                     ID,
                                     ApproverDate
-                                    FROM ESRTransactions";
+                                    FROM ESRTransactions ";
             StringBuilder builder = new StringBuilder();
             builder.Append(BaseSelect);
             return builder;
         }
 
-        private async Task<IList<ESRTransaction>> GetTransactionsAsync(string cmdText, ESRTransaction esrTransaction)
+        private async Task<IList<ESRTransaction>> GetTransactionsAsync(string cmdText)
         {
             IList<ESRTransaction> transactions = new List<ESRTransaction>();
-            SQLiteConnection connection = await new Database(esrTransaction).Connect();
+            SQLiteConnection connection = await new Database(new ESRTransaction()).Connect();
             try
             {
                 using (SQLiteCommand cmd = new SQLiteCommand(connection))

@@ -101,5 +101,10 @@ namespace DocumentRepository
         {
             ContentFrame.Navigate(new Views.TransactionResearch());
         }
+
+        private void OverallStats_Click(object sender, RoutedEventArgs e)
+        {
+            ContentFrame.Navigate(new Views.VerifierView());
+        }
     }
 }

@@ -198,7 +198,7 @@
 														</Grid>
 												</Button.Content>
 										</Button>
-										<!--<Separator Margin='0,4,0,4' />
+										<Separator Margin='0,4,0,4' />
 										<Grid>
 												<Grid.ColumnDefinitions>
 														<ColumnDefinition Width='30*' />
@@ -209,7 +209,7 @@
 										</Grid>
 										<Separator Margin='0,4,0,4' />
 										<StackPanel>
-												<Button x:Name='OverallStats' Margin='4' IsEnabled='False'>
+												<Button x:Name='OverallStats' Margin='4' Click='OverallStats_Click'>
 														<Button.Content>
 																<Grid MinWidth='105'>
 																		<Grid.ColumnDefinitions>
@@ -244,8 +244,8 @@
 																		<TextBlock Text='Certifier' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' />
 																</Grid>
 														</Button.Content>
-												</Button>-->
-										<!--</StackPanel>-->
+												</Button>
+										</StackPanel>
 								</StackPanel>
 						</Grid>
 				</Grid>

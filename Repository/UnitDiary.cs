@@ -25,6 +25,7 @@ namespace Repository
         public DateTime ReportDate { get; set; }
         public bool Confirmed { get; set; }
         public double WaitTime { get { return Math.Round((DateTime.Now - ReportDate).TotalDays); } }
+        public double ConfirmWait { get { return Math.Round((DateTime.Now - UploadedOn).TotalDays); } }
 
         public string CurrentFilePath { get; set; }
 
@@ -144,6 +145,17 @@ namespace Repository
         public string FileStoragePath()
         {
             return $@"{Aruc}\{Year}\{Number}\{Number}.pdf";
+        }
+
+        public void ConfirmUpload()
+        {
+            Confirmed = true;
+            new Database(this).UpdateEntry(this);
+        }
+
+        public void RejectUpload()
+        {
+            new Database(this).DeleteEntry(this);
         }
 
         public async Task<IList<string>> GetBranches()

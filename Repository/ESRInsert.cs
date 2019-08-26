@@ -13,7 +13,7 @@ namespace Repository
         public async Task InsertTransactions(IList<Transaction> transactions)
         {
             IList<Transaction> esrTransactions = transactions.Where(o => o.DocumentRequired != string.Empty).ToList();
-            SQLiteConnection connection = await new Database(esrTransactions.First()).Connect();
+            SQLiteConnection connection = await new Database(new ESRTransaction()).Connect();
             try
             {
                 SQLiteCommand cmd = connection.CreateCommand();

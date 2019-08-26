@@ -126,6 +126,7 @@ namespace Repository
                             {
                                 Directory.CreateDirectory($@"{DefaultLocation}\{aruc}\{year}");
                                 FileSystem.CopyFile($@"{DefaultLocation}\Seed\Diaries.db", $@"{DefaultLocation}\{aruc}\{year}\Diaries.db");
+                                FileSystem.CopyFile($@"{DefaultLocation}\Seed\ESR.db", $@"{DefaultLocation}\{aruc}\{year}\ESR.db");
                             }
                             foreach (var diary in collection.Diaries.Where(o => o.Aruc == aruc && o.Year == year).ToList())
                             {

@@ -11,5 +11,7 @@ namespace Repository
         public int ID { get; set; }
         public string ProgramName { get; set; }
         public int Pin { get; set; }
+
+
     }
 }
