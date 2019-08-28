@@ -211,5 +211,16 @@ namespace DocumentRepository.ViewModels
                 OnPropertyChanged("Message");
             }
         }
+
+        public ICommand GetReport
+        {
+            get { return new RelayCommand(execute => getReport()); }
+        }
+
+        private void getReport()
+        {
+            IList<IReportable> reportables = new List<IReportable>(UnitDiaries);
+            new FileWriter().WriteReport(reportables);
+        }
     }
 }

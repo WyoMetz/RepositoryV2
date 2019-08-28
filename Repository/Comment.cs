@@ -17,7 +17,7 @@ namespace Repository
 
         public string Create()
         {
-            return $@"INSERT INTO Comments (CreatedBy, CreatedOn, CommentText, TransactionID, BatchID) VALUES ('{CreatedBy}', '{CreatedOn}', '{CommentText}', '{TransactionID}', '{BatchID}');";
+            return $@"INSERT INTO Comments (CreatedBy, CreatedOn, CommentText, TransactionID, BatchID) VALUES ('{AppSettings.User}', '{DateTime.Now}', '{CommentText}', '{TransactionID}', '{BatchID}');";
         }
 
         public string DatabaseConnection()

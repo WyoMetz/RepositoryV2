@@ -43,7 +43,7 @@ namespace Linker
                         Uploaded = true,
                         UploadedOn = DateTime.Now,
                         UploadedBy = "System",
-                        CurrentFilePath = uploadloc
+                        UploadLocation = uploadloc
                     });
                 }
             }
@@ -58,7 +58,6 @@ namespace Linker
             Console.WriteLine("Copying and Updating Repository");
             foreach (var item in Diaries)
             {
-                item.UploadLocation = await new FileOperation().CopyFile(item);
                 new Database().UpdateEntry(item);
                 Console.WriteLine(item);
             }

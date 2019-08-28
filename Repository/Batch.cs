@@ -19,6 +19,7 @@ namespace Repository
         public IList<ESRTransaction> EsrTransactions { get; set; }
         public IList<Comment> Comments { get; set; }
         private string UpdateText { get; set; }
+        public double DaysSinceCreation { get { return Math.Round((DateTime.Now - CreatedOn).TotalDays); } }
 
         public string Create()
         {
@@ -48,28 +49,37 @@ namespace Repository
 
         public void SendForConfirmation()
         {
-            UpdateText = $"UPDATE Batches SET NeedsConfirmed = 'True' WHERE ID = '{ID}';";
+            UpdateText = $"UPDATE Batches SET NeedsConfirmed = 'True', BatchNumber = '{BatchNumber}' WHERE ID = '{ID}';";
+            new Database(this).UpdateEntry(this);
+        }
+
+        public void AddComment(Comment comment)
+        {
+            comment.BatchID = ID;
+            new Database(this).CreateEntry(comment);
         }
 
         public void IsCompleted()
         {
             UpdateText = $"UPDATE Batches SET Complete = 'True' WHERE ID = '{ID}';";
+            new Database(this).UpdateEntry(this);
         }
 
         public void RejectToPreparer()
         {
             UpdateText = $"UPDATE Batches SET NeedsConfirmed = 'False' WHERE ID = '{ID}';";
+            new Database(this).UpdateEntry(this);
         }
 
         public async Task<IList<Batch>> GetWorkingBatches()
         {
-            string command = $@"SELECT ID, CreatedBy, CreatedOn, BatchNumber, NeedsConfirmed, Complete FROM Batches WHERE NeedsConfirmed = 'False' ORDER BY CreatedOn ASC;";
+            string command = $@"SELECT ID, CreatedBy, CreatedOn, BatchNumber, NeedsConfirmed, Complete FROM Batches WHERE NeedsConfirmed = 'False' AND Complete <> 'True' ORDER BY CreatedOn ASC;";
             return await GetBatches(command);
         }
 
         public async Task<IList<Batch>> GetNeedsCompleteBatches()
         {
-            string command = $@"SELECT ID, CreatedBy, CreatedOn, BatchNumber, NeedsConfirmed, Complete FROM Batches WHERE NeedsConfirmed = 'True' ORDER BY BatchNumber ASC;";
+            string command = $@"SELECT ID, CreatedBy, CreatedOn, BatchNumber, NeedsConfirmed, Complete FROM Batches WHERE NeedsConfirmed = 'True' AND Complete <> 'True' ORDER BY BatchNumber ASC;";
             return await GetBatches(command);
         }
 
@@ -97,8 +107,8 @@ namespace Repository
                             CreatedBy = reader.GetString(1),
                             CreatedOn = reader.GetDateTime(2),
                             BatchNumber = reader.GetInt32(3),
-                            NeedsConfirmed = reader.GetBoolean(4),
-                            Complete = reader.GetBoolean(5)
+                            NeedsConfirmed = bool.Parse(reader.GetString(4)),
+                            Complete = bool.Parse(reader.GetString(5))
                         });
                     }
                 }

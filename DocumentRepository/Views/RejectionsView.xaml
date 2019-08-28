@@ -1,0 +1,191 @@
+﻿<Page x:Class="DocumentRepository.Views.RejectionsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" UseLayoutRounding='True' xmlns:local="clr-namespace:DocumentRepository.ViewModels" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="16" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" Title="RejectionsView">
+		<Page.DataContext>
+				<local:RejectionViewModel />
+		</Page.DataContext>
+    <Grid>
+				<Grid Margin='4'>
+						<Grid.ColumnDefinitions>
+								<ColumnDefinition Width='30*' />
+								<ColumnDefinition Width='50*' />
+								<ColumnDefinition Width='20*' />
+						</Grid.ColumnDefinitions>
+						<materialDesign:Card Margin='4,40,4,4'>
+								<GroupBox Background='{DynamicResource MaterialDesignPaper}'>
+										<GroupBox.Header>
+												<TextBlock Text='Correct Rejection' />
+										</GroupBox.Header>
+										<Grid>
+												<Grid.RowDefinitions>
+														<RowDefinition Height='20*' />
+														<RowDefinition Height='80*' />
+												</Grid.RowDefinitions>
+												<StackPanel Margin='4'>
+														<StackPanel Orientation='Horizontal'>
+																<TextBlock Text='TTC: ' />
+																<TextBlock Text='{Binding SelectedTransaction.Transaction.TTC}' Margin='0,0,8,0' />
+																<TextBlock Text='TTS: ' />
+																<TextBlock Text='{Binding SelectedTransaction.Transaction.TTS}' Margin='0,0,8,0' />
+																<TextBlock Text='Diary: ' />
+																<TextBlock Text='{Binding SelectedTransaction.Transaction.DiaryNumber}' />
+														</StackPanel>
+														<StackPanel Orientation='Horizontal'>
+																<TextBlock Text='Member: ' />
+																<TextBlock Text='{Binding SelectedTransaction.Transaction.Member.EDIPI}' Margin='0,0,4,0' />
+																<TextBlock Text='{Binding SelectedTransaction.Transaction.Member.LastName}' Margin='0,0,4,0' />
+																<TextBlock Text='{Binding SelectedTransaction.Transaction.Member.FirstName}' Margin='0,0,4,0' />
+														</StackPanel>
+														<StackPanel Orientation='Horizontal'>
+																<TextBlock Text='English Statement: ' />
+																<TextBlock Text='{Binding SelectedTransaction.Transaction.EnglishStatement}' TextWrapping='Wrap' MaxWidth='320'/>
+														</StackPanel>
+														<StackPanel Orientation='Horizontal'>
+																<TextBlock Text='History Statement: ' />
+																<TextBlock Text='{Binding SelectedTransaction.Transaction.HistoryStatement}' TextWrapping='Wrap' MaxWidth='320'/>
+														</StackPanel>
+												</StackPanel>
+												<StackPanel Grid.Row='1'>
+														<StackPanel Orientation='Horizontal' Margin='4' HorizontalAlignment='Center'>
+																<StackPanel Margin='4,4,25,4'>
+																		<TextBlock Text='Attach Document'/>
+																		<Button Style='{StaticResource MaterialDesignFloatingActionMiniAccentButton}' Command='{Binding AttachDocument}'>
+																				<materialDesign:PackIcon Kind='AttachFile' Height='22' Width='22' />
+																		</Button>
+																</StackPanel>
+																<StackPanel Margin='25,4,4,4'>
+																		<TextBlock Text='Add Comment' />
+																		<materialDesign:DialogHost IsOpen='{Binding TransactionDialogOpen}' CloseOnClickAway='True'>
+																				<materialDesign:DialogHost.DialogContent>
+																						<StackPanel Margin='8'>
+																								<TextBlock Text='Enter Return Comments' />
+																								<TextBox Text='{Binding TransactionComment.CommentText, UpdateSourceTrigger=PropertyChanged}' Style='{StaticResource MaterialDesignOutlinedTextFieldTextBox}' AcceptsReturn='True' TextWrapping='Wrap' materialDesign:HintAssist.Hint='Enter any Comments' materialDesign:HintAssist.IsFloating='True' />
+																								<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+																										<Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="{Binding AcceptTransactionDialog}">ACCEPT</Button>
+																										<Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="{Binding CancelTransactionDialog}">CANCEL</Button>
+																								</StackPanel>
+																						</StackPanel>
+																				</materialDesign:DialogHost.DialogContent>
+																				<Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Command='{Binding AddComment}'>
+																						<materialDesign:PackIcon Kind="Plus" Height="22" Width="22" />
+																				</Button>
+																		</materialDesign:DialogHost>
+																</StackPanel>
+														</StackPanel>
+														<Button Margin='4' Command='{Binding SendToVerifier}'>SEND FOR VERIFICATION</Button>
+												</StackPanel>
+												<materialDesign:Snackbar Grid.Row='1' MessageQueue='{Binding Message}'/>
+										</Grid>
+								</GroupBox>
+						</materialDesign:Card>
+						<materialDesign:Card Grid.Column='1' VerticalAlignment='Stretch' Margin='4'>
+								<Grid Margin='4'>
+										<Grid.RowDefinitions>
+												<RowDefinition Height='5*' />
+												<RowDefinition Height='90*' />
+												<RowDefinition Height='5*' />
+										</Grid.RowDefinitions>
+										<TextBlock Text='Transactions Missing Documents from Diary Scans' VerticalAlignment='Center'/>
+										<DataGrid Grid.Row='1' Margin='4' ItemsSource='{Binding EsrTransactions}' SelectedItem='{Binding SelectedTransaction}' AutoGenerateColumns='False' CanUserAddRows='False'>
+												<DataGrid.Columns>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<TextBlock Text='{Binding RejectWait}' />
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+																<DataGridTemplateColumn.HeaderTemplate>
+																		<DataTemplate>
+																				<StackPanel>
+																						<TextBlock Text='Days' />
+																						<TextBlock Text='Awaiting' />
+																						<TextBlock Text='Return' />
+																				</StackPanel>
+																		</DataTemplate>
+																</DataGridTemplateColumn.HeaderTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.Header>
+																		<TextBlock Text='Diary' HorizontalAlignment='Center' />
+																</DataGridTemplateColumn.Header>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<Button Command='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.ViewDiary}' Style="{DynamicResource MaterialDesignFlatButton}">
+																						<Button.Content>
+																								<StackPanel Orientation='Horizontal'>
+																										<TextBlock Text='{Binding Transaction.DiaryNumber}' />
+																										<materialDesign:PackIcon Kind='Paperclip' />
+																								</StackPanel>
+																						</Button.Content>
+																				</Button>
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<TextBlock Text='{Binding Transaction.Branch}' />
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+																<DataGridTemplateColumn.HeaderTemplate>
+																		<DataTemplate>
+																				<Grid>
+																						<Grid.RowDefinitions>
+																								<RowDefinition />
+																								<RowDefinition />
+																						</Grid.RowDefinitions>
+																						<TextBlock Text='Branch' />
+																						<ComboBox Grid.Row='1' ItemsSource='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Branches}' SelectedValue='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Filter}' />
+																				</Grid>
+																		</DataTemplate>
+																</DataGridTemplateColumn.HeaderTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTextColumn Header='Member EDIPI' Binding='{Binding Transaction.Member.EDIPI}' />
+														<DataGridTextColumn Header='Last Name' Binding='{Binding Transaction.Member.LastName}' />
+														<DataGridTextColumn Header='TTC' Binding='{Binding Transaction.TTC}' />
+														<DataGridTextColumn Header='TTS' Binding='{Binding Transaction.TTS}' />
+												</DataGrid.Columns>
+										</DataGrid>
+										<Button Grid.Row='2'>Get Report</Button>
+								</Grid>
+						</materialDesign:Card>
+						<materialDesign:Card Grid.Column='2' Margin='4'>
+								<Grid Margin='4'>
+										<Grid.RowDefinitions>
+												<RowDefinition Height='10*' />
+												<RowDefinition Height='10*' />
+												<RowDefinition Height='90*' />
+										</Grid.RowDefinitions>
+										<StackPanel Margin='4' Visibility='{Binding UploadVisibility}'>
+												<TextBlock Text='Attached Document' />
+												<Button Style="{StaticResource MaterialDesignFlatButton}" Command='{Binding ViewDoc}'>
+														<Button.Content>
+																<StackPanel Orientation='Horizontal'>
+																		<materialDesign:PackIcon Kind='NoteText' />
+																		<TextBlock Text=' View Document ' />
+																</StackPanel>
+														</Button.Content>
+												</Button>
+										</StackPanel>
+										<TextBlock Text='Comments' Margin='4' Grid.Row='1' />
+										<ListBox Grid.Row='2' Margin='4' ItemsSource='{Binding Comments}'>
+												<ListBox.ItemTemplate>
+														<DataTemplate>
+																<StackPanel Margin='0,0,0,8'>
+																		<StackPanel Orientation='Horizontal'>
+																				<TextBlock Text='{Binding CreatedBy}' Margin='0,0,8,0' />
+																				<TextBlock Text='{Binding CreatedOn}' />
+																		</StackPanel>
+																		<Separator />
+																		<TextBlock Text='{Binding CommentText}' TextWrapping='Wrap' />
+																</StackPanel>
+														</DataTemplate>
+												</ListBox.ItemTemplate>
+										</ListBox>
+								</Grid>
+						</materialDesign:Card>
+				</Grid>
+    </Grid>
+</Page>

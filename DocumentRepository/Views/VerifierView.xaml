@@ -80,7 +80,14 @@
 														<DataGridTextColumn Header='Certifier' Binding='{Binding Certifier}' />
 												</DataGrid.Columns>
 										</DataGrid>
-										<Button Content='Get Report' Grid.Row='2' />
+										<Button Grid.Row='2' Command='{Binding GetReport}'>
+												<Button.Content>
+														<StackPanel Orientation='Horizontal'>
+																<materialDesign:PackIcon Kind='ViewList' />
+																<TextBlock Text='Get Report' />
+														</StackPanel>
+												</Button.Content>
+										</Button>
 								</Grid>
 						</materialDesign:Card>
 						<materialDesign:Card Margin='4' VerticalAlignment='Stretch' Grid.Column='1'>

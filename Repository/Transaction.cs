@@ -50,7 +50,7 @@ namespace Repository
         public async Task<IList<Transaction>> GetTransactionInfomration(UnitDiary diary)
         {
             Transaction transaction = new Transaction { ARUC = diary.Aruc, DiaryYear = diary.Year, DiaryNumber = diary.Number };
-            string commandText = $@"SELECT TTC, TTS, EnglishStatement, HistoryStatement, TransactionErrorCode, Certifier, CertifierRank, CertifierLastName, CertifierFirstName, Preparer, PreparerRank, PreparerLastName, PreparerFirstName, Member, MemberRank, MemberLastName, MemberFirstName, DiaryNumber, UploadLocation, ARUC, DiaryYear, Branch, DocumentRequired, DocumentMissing, DocumentAttached, UpdateDate, BatchNumber
+            string commandText = $@"SELECT TTC, TTS, EnglishStatement, HistoryStatement, TransactionErrorCode, Certifier, CertifierRank, CertifierLastName, CertifierFirstName, Preparer, PreparerRank, PreparerLastName, PreparerFirstName, Member, MemberRank, MemberLastName, MemberFirstName, DiaryNumber, DiaryUploadLocation, ARUC, DiaryYear, Branch, DocumentRequired, DocumentMissing, DocumentAttached, UpdateDate, BatchNumber
                                     FROM Transactions 
                                     WHERE DiaryNumber = '{diary.Number}' ORDER BY Member ASC;";
             return await GetTransactionsAsync(commandText, transaction);

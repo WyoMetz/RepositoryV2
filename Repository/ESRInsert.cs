@@ -19,19 +19,20 @@ namespace Repository
                 SQLiteCommand cmd = connection.CreateCommand();
                 SQLiteTransaction transaction = connection.BeginTransaction();
                 cmd.CommandText = @"INSERT INTO ESRTransactions 
-                                        (DiaryNumber, DiaryYear, ARUC, Branch, 
+                                        (DiaryNumber, DiaryYear, DiaryUploadLocation, ARUC, Branch, 
                                          Certifier, CertifierRank, CertifierFirstName, CertifierLastName, CertifierMI, 
                                          Preparer, PreparerRank, PreparerFirstName, PreparerLastName, PreparerMI, 
                                          Member, MemberRank, MemberFirstName, MemberLastName, MemberMI, 
-                                         TTC, TTS, EnglishStatement, HistoryStatement, TransactionErrorCode, DocumentRequired, ConfirmDate, ApproverDate, RejectDate)
+                                         TTC, TTS, EnglishStatement, HistoryStatement, TransactionErrorCode, DocumentRequired, ConfirmDate, ApproverDate, RejectDate, BatchID, DocumentMissing, DocumentAttached, IsRejected, NeedsConfirmed, Complete)
                                          VALUES
-                                        (@DiaryNumber, @DiaryYear, @ARUC, @Branch, @Certifier, 
+                                        (@DiaryNumber, @DiaryYear, @DiaryUploadLocation, @ARUC, @Branch, @Certifier, 
                                          @CertifierRank, @CertifierFirstName, @CertifierLastName, @CertifierMI,
                                          @Preparer, @PreparerRank, @PreparerFirstName, @PreparerLastName, @PreparerMI,
                                          @Member, @MemberRank, @MemberFirstName, @MemberLastName, @MemberMI, 
-                                         @TTC, @TTS, @EnglishStatement, @HistoryStatement, @TransactionErrorCode, @DocumentRequired, @ConfirmDate, @ApproverDate, @RejectDate);";
+                                         @TTC, @TTS, @EnglishStatement, @HistoryStatement, @TransactionErrorCode, @DocumentRequired, @ConfirmDate, @ApproverDate, @RejectDate, @BatchID, @DocumentMissing, @DocumentAttached, @IsRejected, @NeedsConfirmed, @Complete);";
                 cmd.Parameters.AddWithValue("@DiaryNumber", "");
                 cmd.Parameters.AddWithValue("@DiaryYear", "");
+                cmd.Parameters.AddWithValue("@DiaryUploadLocation", "");
                 cmd.Parameters.AddWithValue("@ARUC", "");
                 cmd.Parameters.AddWithValue("@Branch", "");
                 cmd.Parameters.AddWithValue("@Certifier", "");
@@ -58,11 +59,18 @@ namespace Repository
                 cmd.Parameters.AddWithValue("@ConfirmDate", "");
                 cmd.Parameters.AddWithValue("@ApproverDate", "");
                 cmd.Parameters.AddWithValue("@RejectDate", "");
+                cmd.Parameters.AddWithValue("@BatchID", "");
+                cmd.Parameters.AddWithValue("@DocumentMissing", false);
+                cmd.Parameters.AddWithValue("@DocumentAttached", false);
+                cmd.Parameters.AddWithValue("@IsRejected", false);
+                cmd.Parameters.AddWithValue("@NeedsConfirmed", false);
+                cmd.Parameters.AddWithValue("@Complete", false);
                 foreach (var trans in esrTransactions)
                 {
                     Console.WriteLine($"Inserting Transaction for {trans.DiaryNumber}, {trans.TTC}, {trans.TTS}");
                     cmd.Parameters["@DiaryNumber"].Value = trans.DiaryNumber;
                     cmd.Parameters["@DiaryYear"].Value = trans.DiaryYear;
+                    cmd.Parameters["@DiaryUploadLocation"].Value = trans.DiaryUploadLocation;
                     cmd.Parameters["@ARUC"].Value = trans.ARUC;
                     cmd.Parameters["@Branch"].Value = trans.Branch;
                     cmd.Parameters["@Certifier"].Value = trans.Certifier.EDIPI;
@@ -88,7 +96,8 @@ namespace Repository
                     cmd.Parameters["@DocumentRequired"].Value = trans.DocumentRequired;
                     cmd.Parameters["@ConfirmDate"].Value = DateTime.Now;
                     cmd.Parameters["@ApproverDate"].Value = DateTime.Now;
-                    cmd.Parameters["@RejectDate"].Value = DateTime.Now;
+                    cmd.Parameters["@RejectDate"].Value = DateTime.MaxValue;
+                    cmd.Parameters["@BatchID"].Value = 0;
                     cmd.ExecuteNonQuery();
                 }
                 transaction.Commit();

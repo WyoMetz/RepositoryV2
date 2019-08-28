@@ -140,6 +140,18 @@
 														</Grid>
 												</Button.Content>
 										</Button>
+										<Button x:Name='RejectionUpload' Margin='4' Click='RejectionUpload_Click'>
+												<Button.Content>
+														<Grid MinWidth='105'>
+																<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width='20*' />
+																		<ColumnDefinition Width='80*' />
+																</Grid.ColumnDefinitions>
+																<materialDesign:PackIcon Kind='FileAlert' HorizontalAlignment='Center' VerticalAlignment='Center' />
+																<TextBlock Text='Rejections' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' />
+														</Grid>
+												</Button.Content>
+										</Button>
 										<Button x:Name='DocumentUpload' Margin='4' Click='DocumentUpload_Click'>
 												<Button.Content>
 														<Grid MinWidth='105'>
@@ -200,28 +212,39 @@
 										</Button>
 										<Separator Margin='0,4,0,4' />
 										<Grid>
-												<Grid.ColumnDefinitions>
-														<ColumnDefinition Width='30*' />
-														<ColumnDefinition Width='70*' />
-												</Grid.ColumnDefinitions>
-												<materialDesign:PackIcon Kind='ChartPie' HorizontalAlignment='Center' MinHeight='35' MinWidth='35' VerticalAlignment='Center' />
-												<TextBlock Text='Stats' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' FontSize='18' />
+																<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width='30*' />
+																		<ColumnDefinition Width='70*' />
+																</Grid.ColumnDefinitions>
+																<materialDesign:PackIcon Kind='BookSecure' HorizontalAlignment='Left' MinHeight='35' MinWidth='35' VerticalAlignment='Center' />
+																<TextBlock Text='Oversight' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' FontSize='18' />
 										</Grid>
 										<Separator Margin='0,4,0,4' />
-										<StackPanel>
-												<Button x:Name='OverallStats' Margin='4' Click='OverallStats_Click'>
+										<Expander IsExpanded='{Binding OpenBox}'>
+												<Expander.Header>
+														<Grid>
+																<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width='40*' />
+																		<ColumnDefinition Width='60*' />
+																</Grid.ColumnDefinitions>
+																<TextBlock Text='Pin: ' VerticalAlignment='Center' FontSize='12'/>
+																<TextBox Text='{Binding PinCode, UpdateSourceTrigger=PropertyChanged}' Grid.Column='1'/>
+														</Grid>
+												</Expander.Header>
+												<StackPanel>
+												<Button x:Name='OverallStats' Margin='4' Click='OverallStats_Click' Visibility='{Binding IsVerfier}'>
 														<Button.Content>
 																<Grid MinWidth='105'>
 																		<Grid.ColumnDefinitions>
 																				<ColumnDefinition Width='20*' />
 																				<ColumnDefinition Width='80*' />
 																		</Grid.ColumnDefinitions>
-																		<materialDesign:PackIcon Kind='ChartBar' HorizontalAlignment='Center' VerticalAlignment='Center' />
-																		<TextBlock Text='Overall' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' />
+																		<materialDesign:PackIcon Kind='FileCheck' HorizontalAlignment='Center' VerticalAlignment='Center' />
+																		<TextBlock Text='Verify' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' />
 																</Grid>
 														</Button.Content>
 												</Button>
-												<Button x:Name='PreparerStats' Margin='4' IsEnabled='False'>
+												<Button x:Name='PreparerStats' Margin='4' Click='PreparerStats_Click' Visibility='{Binding IsPreparer}'>
 														<Button.Content>
 																<Grid MinWidth='105'>
 																		<Grid.ColumnDefinitions>
@@ -229,11 +252,11 @@
 																				<ColumnDefinition Width='80*' />
 																		</Grid.ColumnDefinitions>
 																		<materialDesign:PackIcon Kind='AccountEdit' HorizontalAlignment='Center' VerticalAlignment='Center' />
-																		<TextBlock Text='Preparer' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' />
+																		<TextBlock Text='Prepare' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' />
 																</Grid>
 														</Button.Content>
 												</Button>
-												<Button x:Name='CertifierStats' Margin='4' IsEnabled='False'>
+												<Button x:Name='CertifierStats' Margin='4' Click='CertifierStats_Click' Visibility='{Binding IsApprover}'>
 														<Button.Content>
 																<Grid MinWidth='105'>
 																		<Grid.ColumnDefinitions>
@@ -241,11 +264,12 @@
 																				<ColumnDefinition Width='80*' />
 																		</Grid.ColumnDefinitions>
 																		<materialDesign:PackIcon Kind='AccountCheck' HorizontalAlignment='Center' VerticalAlignment='Center' />
-																		<TextBlock Text='Certifier' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' />
+																		<TextBlock Text='Approve' Grid.Column='1' TextAlignment='Left' Margin='4' VerticalAlignment='Center' />
 																</Grid>
 														</Button.Content>
 												</Button>
 										</StackPanel>
+										</Expander>
 								</StackPanel>
 						</Grid>
 				</Grid>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Repository
 {
-    public class ESRTransaction : BaseReportable, ITransactable, IViewable, IReportable
+    public class ESRTransaction : BaseReportable, ITransactable, IViewable, IReportable, IStorable
     {
         public Transaction Transaction { get; set; }
         public int BatchID { get; set; }
@@ -23,6 +24,12 @@ namespace Repository
         public double RejectWait { get { return Math.Round((DateTime.Now - RejectDate).TotalDays); } }
         public double ApproverWait { get { return Math.Round((DateTime.Now - ApproverDate).TotalDays); } }
         private string UpdateText { get; set; }
+        public string CurrentFilePath { get; set; }
+
+        public override string ToString()
+        {
+            return Transaction.ToString();
+        }
 
         public string Create()
         {
@@ -41,7 +48,7 @@ namespace Repository
 
         public string Update()
         {
-            return UpdateText; //TODO: Define Update
+            return UpdateText;
         }
 
         public IWritable GetWritable()
@@ -55,13 +62,19 @@ namespace Repository
             new Database(this).UpdateEntry(this);
         }
 
+        public void AddComment(Comment comment)
+        {
+            comment.TransactionID = ID;
+            new Database(this).CreateEntry(comment);
+        }
+
         public void RejectToBranches()
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($@"UPDATE ESRTransactions SET NeedsConfirmed = 'False', IsRejected = 'True'");
             if(DateTime.Now <= RejectDate || RejectDate == null)
             {
-                builder.Append($@", RejectDate = '{DateTime.Now}");
+                builder.Append($@", RejectDate = '{DateTime.Now}'");
             }
             builder.Append($@" WHERE ID = '{ID}';");
             UpdateText = builder.ToString();
@@ -74,13 +87,19 @@ namespace Repository
             new Database(this).UpdateEntry(this);
         }
 
+        public void CompleteBatchTransactions(Batch batch)
+        {
+            UpdateText = $@"UPDATE ESRTransactions SET Complete = 'True' WHERE BatchID = '{batch.ID}';";
+            new Database(this).UpdateEntry(this);
+        }
+
         public void UpdateDocument()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($@"UPDATE ESRTransactions SET IsRejected = 'False'");
-            if(Transaction.CurrentFilePath != null)
+            builder.Append($@"UPDATE ESRTransactions SET IsRejected = 'False' ");
+            if(CurrentFilePath != null)
             {
-                builder.Append($@", UploadLocation = '{Transaction.UploadLocation}'");
+                builder.Append($@", UploadLocation = '{Transaction.UploadLocation}', DocumentAttached = 'True' ");
             }
             builder.Append($@"WHERE ID = '{ID}';");
             UpdateText = builder.ToString();
@@ -99,6 +118,12 @@ namespace Repository
             new Database(this).UpdateEntry(this);
         }
 
+        public void RejectToPreparer()
+        {
+            UpdateText = $@"UPDATE ESRTransactions SET NeedsConfirmed = 'False' WHERE ID = '{ID}';";
+            new Database(this).UpdateEntry(this);
+        }
+
         public string DocumentPath()
         {
             return Transaction.UploadLocation;
@@ -106,17 +131,17 @@ namespace Repository
 
         public string CsvOutput()
         {
-            throw new NotImplementedException(); //TODO: Define CSV Output and Header
+            return $@"{Transaction.Branch},{Transaction.DiaryNumber},{Transaction.TTC},{Transaction.TTS},{Transaction.DocumentRequired},{Transaction.Member.EDIPI} {Transaction.Member.LastName} {Transaction.Member.FirstName},{ConfirmWait}";
         }
 
         public string CsvHeader()
         {
-            throw new NotImplementedException();
+            return "Branch,Diary,TTC,TTS,Document Required,Member,Days Awaiting Batching";
         }
 
         public async Task<IList<ESRTransaction>> GetNotBatched()
         {
-            string Command = SelectBase().Append($@"WHERE BatchID = '0' ORDER BY DiaryNumber ASC;").ToString();
+            string Command = SelectBase().Append($@"WHERE (NeedsConfirmed = 'False' OR NeedsConfirmed = '0') AND BatchID = '0' AND (IsRejected = 'False' OR IsRejected = 0) ORDER BY DiaryNumber ASC;").ToString();
             return await GetTransactionsAsync(Command);
         }
 
@@ -128,13 +153,13 @@ namespace Repository
 
         public async  Task<IList<ESRTransaction>> GetRejectedTransactions()
         {
-            string Command = SelectBase().Append($@"WHERE IsRejected = 'True' ORDER BY DiaryNumber ASC;").ToString();
+            string Command = SelectBase().Append($@"WHERE (Complete = '0' OR Complete = 'False') AND IsRejected = 'True' ORDER BY DiaryNumber ASC;").ToString();
             return await GetTransactionsAsync(Command);
         }
 
         public async Task<IList<ESRTransaction>> GetNeedsConfirmedTransactions()
         {
-            string Command = SelectBase().Append($@"WHERE NeedsConfirmed = 'True' ORDER BY DiaryNumber ASC;").ToString();
+            string Command = SelectBase().Append($@"WHERE (Complete = '0' OR Complete = 'False') AND NeedsConfirmed = 'True' ORDER BY DiaryNumber ASC;").ToString();
             return await GetTransactionsAsync(Command);
         }
 
@@ -180,7 +205,8 @@ namespace Repository
                                     NeedsConfirmed,
                                     Complete,
                                     ID,
-                                    ApproverDate
+                                    ApproverDate,
+                                    DiaryUploadLocation
                                     FROM ESRTransactions ";
             StringBuilder builder = new StringBuilder();
             builder.Append(BaseSelect);
@@ -200,7 +226,7 @@ namespace Repository
                     {
                         while (reader.Read())
                         {
-                            object[] values = cleanInput(reader, 35);
+                            object[] values = cleanInput(reader, 36);
                             bool missing = false;
                             bool attached = false;
                             int batchNumber = 0;
@@ -222,7 +248,7 @@ namespace Repository
                                     EnglishStatement = values[2].ToString(),
                                     HistoryStatement = values[3].ToString(),
                                     TransactionErrorCode = values[4].ToString(),
-                                    DiaryUploadLocation = values[18].ToString(),
+                                    UploadLocation = values[18].ToString(),
                                     Preparer = Preparer,
                                     Certifier = Certifier,
                                     Member = Member,
@@ -230,6 +256,7 @@ namespace Repository
                                     DiaryYear = int.Parse(values[20].ToString()),
                                     Branch = values[21].ToString(),
                                     DocumentRequired = values[22].ToString(),
+                                    DiaryUploadLocation = values[35].ToString(),
                                     DocumentMissing = missing,
                                     DocumentAttached = attached,
                                     UpdateDate = now,
@@ -268,6 +295,37 @@ namespace Repository
                 }
             }
             return temp;
+        }
+
+        public async Task<IList<string>> GetDocTypes()
+        {
+            IList<string> docTypes = new List<string>();
+            SQLiteConnection connection = await new Database(new ESRTransaction()).Connect();
+            try
+            {
+                using(SQLiteCommand cmd = new SQLiteCommand(connection))
+                {
+                    cmd.CommandText = @"SELECT DISTINCT(DocumentRequired) FROM ESRTransactions ORDER BY DocumentRequired ASC;";
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            object[] values = cleanInput(reader, 1);
+                            docTypes.Add(values[0].ToString());
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error Reading ESR Transaction Database: " + ex.Message.ToString(), "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return docTypes;
+        }
+
+        public string FileStoragePath()
+        {
+            return $@"{Transaction.ARUC}\{Transaction.DiaryYear}\{Transaction.DiaryNumber}\{Path.GetFileName(CurrentFilePath)}";
         }
     }
 }
