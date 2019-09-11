@@ -41,7 +41,7 @@ namespace DocumentRepository.ViewModels
             CurrentYears = years;
             IsPreparer = Visibility.Collapsed;
             IsApprover = Visibility.Collapsed;
-            IsVerfier = Visibility.Collapsed;
+            IsVerifier = Visibility.Collapsed;
             OpenBox = false;
         }
 
@@ -306,7 +306,7 @@ namespace DocumentRepository.ViewModels
         }
 
         private Visibility isVerifier;
-        public Visibility IsVerfier
+        public Visibility IsVerifier
         {
             get
             {
@@ -380,23 +380,23 @@ namespace DocumentRepository.ViewModels
         {
             IsPreparer = Visibility.Collapsed;
             IsApprover = Visibility.Collapsed;
-            IsVerfier = Visibility.Collapsed;
+            IsVerifier = Visibility.Collapsed;
             OpenBox = false;
             if(PinCode == getPin("Verifier"))
             {
-                IsVerfier = Visibility.Visible;
+                IsVerifier = Visibility.Visible;
                 OpenBox = true;
             }
             if(PinCode == getPin("Approver"))
             {
                 IsApprover = Visibility.Visible;
-                isVerifier = Visibility.Visible;
+                IsVerifier = Visibility.Visible;
                 IsPreparer = Visibility.Visible;
                 OpenBox = true;
             }
             if(PinCode == getPin("Preparer"))
             {
-                IsVerfier = Visibility.Visible;
+                IsVerifier = Visibility.Visible;
                 IsPreparer = Visibility.Visible;
                 OpenBox = true;
             }

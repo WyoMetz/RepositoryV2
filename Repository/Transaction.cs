@@ -28,7 +28,7 @@ namespace Repository
         public string DocumentRequired { get; set; }
         public bool DocumentMissing { get; set; }
         public bool DocumentAttached { get; set; }
-        public int BatchNumber { get; set; }
+        public string BatchNumber { get; set; }
         public DateTime UpdateDate { get; set; }
         public string UploadLocation { get; set; }
         public string CurrentFilePath { get; set; }
@@ -159,7 +159,6 @@ namespace Repository
                             bool.TryParse(values[23].ToString(), out missing);
                             bool.TryParse(values[24].ToString(), out attached);
                             DateTime.TryParse(values[25].ToString(), out now);
-                            int.TryParse(values[26].ToString(), out batchNumber);
                             Marine Certifier = new Marine { EDIPI = int.Parse(values[5].ToString()), Rank = values[6].ToString(), LastName = values[7].ToString(), FirstName = values[8].ToString() };
                             Marine Preparer = new Marine { EDIPI = int.Parse(values[9].ToString()), Rank = values[10].ToString(), LastName = values[11].ToString(), FirstName = values[12].ToString() };
                             Marine Member = new Marine { EDIPI = int.Parse(values[13].ToString()), Rank = values[14].ToString(), LastName = values[15].ToString(), FirstName = values[16].ToString() };
@@ -182,7 +181,7 @@ namespace Repository
                                 DocumentMissing = missing,
                                 DocumentAttached = attached,
                                 UpdateDate = now,
-                                BatchNumber = batchNumber
+                                BatchNumber = values[26].ToString()
                             });
                         }
                         reader.Close();

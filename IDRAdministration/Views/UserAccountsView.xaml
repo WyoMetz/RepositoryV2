@@ -12,6 +12,7 @@
 						<Grid.ColumnDefinitions>
 								<ColumnDefinition />
 								<ColumnDefinition />
+								<ColumnDefinition />
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
 								<RowDefinition Height='10*' />
@@ -43,6 +44,26 @@
 										</DataTemplate>
 								</ListBox.ItemTemplate>
 						</ListBox>
+						</StackPanel>
+						<StackPanel Grid.Column='2' Grid.RowSpan='2' Margin='8'>
+								<TextBlock Text='Pin Code Change' FontSize='18' />
+								<Separator />
+								<ListBox ItemsSource='{Binding PinCodes}' SelectedItem='{Binding SelectedPin}'>
+										<ListBox.ItemTemplate>
+												<DataTemplate>
+														<StackPanel Orientation='Horizontal'>
+																<TextBlock Text='{Binding ProgramName}' Margin='4'/>
+																<TextBlock Text='{Binding Pin}' Margin='4' />
+														</StackPanel>
+												</DataTemplate>
+										</ListBox.ItemTemplate>
+								</ListBox>
+								<TextBlock Text='Select Pin above and enter new Pin below.' Margin='4' />
+								<StackPanel Orientation='Horizontal' HorizontalAlignment='Center'>
+										<TextBlock Text='{Binding SelectedPin.ProgramName}' VerticalAlignment='Center' Margin='4'/>
+										<TextBox Text='{Binding SelectedPin.Pin, Mode=OneWayToSource}' Margin='4' VerticalAlignment='Center' MinWidth='100' materialDesign:HintAssist.Hint='Enter Pin' materialDesign:HintAssist.IsFloating='True'/>
+										<Button Content='Update' Margin='4' Command='{Binding UpdatePin}'/>
+								</StackPanel>
 						</StackPanel>
 				</Grid>
 		</Grid>

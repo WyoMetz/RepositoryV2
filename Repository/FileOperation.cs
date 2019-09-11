@@ -69,6 +69,20 @@ namespace Repository
             return Task.CompletedTask;
         }
 
+        public Task DownloadAdmin()
+        {
+            string AppDataLocal = Path.GetFullPath(@"C:\");
+            string RepositoryDownLoad = Path.GetFullPath(AppDataLocal + @"\IDRAdmin");
+            if (!Directory.Exists(RepositoryDownLoad))
+            {
+                Directory.CreateDirectory(RepositoryDownLoad);
+            }
+
+            string RepositoryLocation = Path.GetFullPath(new AppSettings().AdministrationLocation);
+            FileSystem.CopyDirectory(RepositoryLocation, RepositoryDownLoad, true);
+            return Task.CompletedTask;
+        }
+
         public Task DeployRepository(IDeployable deployable)
         {
             string ApplicationsFolder = deployable.ApplicationDeploymentLocations();

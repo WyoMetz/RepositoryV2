@@ -81,6 +81,7 @@ namespace DocumentRepository.ViewModels
 
         private async void GetComments()
         {
+            UploadVisibility = Visibility.Collapsed;
             if(SelectedTransaction != null)
             {
                 Comments = await comment.GetTransactionComments(SelectedTransaction);
@@ -358,7 +359,7 @@ namespace DocumentRepository.ViewModels
         {
             if(SelectedBatch != null)
             {
-                if(SelectedBatch.BatchNumber != 0)
+                if(!string.IsNullOrEmpty(SelectedBatch.BatchNumber))
                 {
                     return true;
                 }

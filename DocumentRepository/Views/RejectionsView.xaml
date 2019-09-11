@@ -106,6 +106,7 @@
 																		</DataTemplate>
 																</DataGridTemplateColumn.HeaderTemplate>
 														</DataGridTemplateColumn>
+														<DataGridTextColumn Header='Document Required' Binding='{Binding Transaction.DocumentRequired}' />
 														<DataGridTemplateColumn>
 																<DataGridTemplateColumn.Header>
 																		<TextBlock Text='Diary' HorizontalAlignment='Center' />

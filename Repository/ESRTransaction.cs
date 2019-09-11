@@ -260,7 +260,7 @@ namespace Repository
                                     DocumentMissing = missing,
                                     DocumentAttached = attached,
                                     UpdateDate = now,
-                                    BatchNumber = batchNumber
+                                    BatchNumber = values[26].ToString()
                                 },
                                 BatchID = int.Parse(values[27].ToString()),
                                 IsRejected = bool.Parse(values[28].ToString()),

@@ -20,7 +20,7 @@ namespace Repository
 
         public string DatabaseConnection()
         {
-            throw new NotImplementedException();
+            return "Repository.db";
         }
 
         public string Delete()

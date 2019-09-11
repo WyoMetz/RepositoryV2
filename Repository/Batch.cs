@@ -13,7 +13,7 @@ namespace Repository
         public int ID { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
-        public int BatchNumber { get; set; }
+        public string BatchNumber { get; set; }
         public bool Complete { get; set; }
         public bool NeedsConfirmed { get; set; }
         public IList<ESRTransaction> EsrTransactions { get; set; }
@@ -91,6 +91,8 @@ namespace Repository
         
         private async Task<IList<Batch>> GetBatches(string cmdText)
         {
+            bool needsUpdate = false;
+            Type ColumnOld = typeof(long);
             Batch batch = new Batch();
             IList<Batch> batches = new List<Batch>();
             SQLiteConnection connection = await new Database(batch).Connect();
@@ -99,6 +101,11 @@ namespace Repository
                 cmd.CommandText = cmdText;
                 using(SQLiteDataReader reader = cmd.ExecuteReader())
                 {
+                    if (reader.GetFieldType(3) == ColumnOld)
+                    {
+                        needsUpdate = true;
+                    }
+
                     while (reader.Read())
                     {
                         batches.Add(new Batch
@@ -106,12 +113,16 @@ namespace Repository
                             ID = reader.GetInt32(0),
                             CreatedBy = reader.GetString(1),
                             CreatedOn = reader.GetDateTime(2),
-                            BatchNumber = reader.GetInt32(3),
+                            BatchNumber = reader.GetValue(3).ToString(),
                             NeedsConfirmed = bool.Parse(reader.GetString(4)),
                             Complete = bool.Parse(reader.GetString(5))
                         });
                     }
                 }
+            }
+            if(needsUpdate == true)
+            {
+                Task.Run(() => CorrectColumn());
             }
             return batches;
         }
@@ -147,6 +158,32 @@ namespace Repository
             {
                 MessageBox.Show("An Error ocurred during SQL Execution: " + ex.Message.ToString(), "SQL Execution Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private async Task CorrectColumn()
+        {
+            SQLiteConnection connection = await new Database(this).Connect();
+            SQLiteCommand cmd = connection.CreateCommand();
+            SQLiteTransaction transaction = connection.BeginTransaction();
+            cmd.CommandText = @"CREATE TABLE BatchNew 
+                                (
+                                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                CreatedBy VARCHAR(100),
+                                CreatedOn DATE,
+                                BatchNumber VARCHAR(100),
+                                NeedsConfirmed BOOL,
+                                Complete BOOL
+                                );";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = @"INSERT INTO BatchNew SELECT ID, CreatedBy, CreatedOn, BatchNumber, NeedsConfirmed, Complete FROM Batches WHERE true;";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = @"DROP TABLE Batches";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = @"ALTER TABLE BatchNew RENAME TO Batches;";
+            cmd.ExecuteNonQuery();
+            transaction.Commit();
+            cmd.Dispose();
+            connection.Dispose();
         }
     }
 }

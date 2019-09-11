@@ -55,7 +55,7 @@ namespace Linker
 
         public async void Upload()
         {
-            Console.WriteLine("Copying and Updating Repository");
+            Console.WriteLine("Updating Repository");
             foreach (var item in Diaries)
             {
                 new Database().UpdateEntry(item);

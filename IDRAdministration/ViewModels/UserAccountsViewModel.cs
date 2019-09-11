@@ -21,6 +21,7 @@ namespace IDRAdministration.ViewModels
         public async void BuildLists()
         {
             UserAccounts = await new User().GetUsers();
+            PinCodes = await new PinCode().GetPinCodes();
             Users = UserAccounts;
         }
 
@@ -64,6 +65,7 @@ namespace IDRAdministration.ViewModels
             SelectedUser.UsesDarkTheme = true;
             SelectedUser.BackgroundPath = @".\Resources\Camo2.jpg";
             new Database().UpdateEntry(SelectedUser);
+            Message = new SnackbarMessageQueue();
             Message.Enqueue($"Account for {SelectedUser.UserName} has been reset");
             SelectedUser = null;
         }
@@ -103,6 +105,42 @@ namespace IDRAdministration.ViewModels
             {
                 message = value;
                 OnPropertyChanged("Message");
+            }
+        }
+
+        private PinCode selectedPin;
+        public PinCode SelectedPin
+        {
+            get
+            {
+                return selectedPin;
+            }
+            set
+            {
+                selectedPin = value;
+                OnPropertyChanged("SelectedPin");
+            }
+        }
+
+        private IList<PinCode> pinCodes;
+        public IList<PinCode> PinCodes
+        {
+            get
+            {
+                return pinCodes;
+            }
+            set
+            {
+                pinCodes = value;
+                OnPropertyChanged("PinCodes");
+            }
+        }
+
+        public ICommand UpdatePin
+        {
+            get
+            {
+                return new RelayCommand(execute => SelectedPin.UpdatePin());
             }
         }
     }
