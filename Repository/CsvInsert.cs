@@ -126,6 +126,7 @@ namespace Repository
                             {
                                 Directory.CreateDirectory($@"{DefaultLocation}\{aruc}\{year}");
                                 FileSystem.CopyFile($@"{DefaultLocation}\Seed\Diaries.db", $@"{DefaultLocation}\{aruc}\{year}\Diaries.db");
+                                FileSystem.CopyFile($@"{DefaultLocation}\Seed\ESR.db", $@"{DefaultLocation}\{aruc}\{year}\ESR.db");
                             }
                             foreach (var diary in collection.Diaries.Where(o => o.Aruc == aruc && o.Year == year).ToList())
                             {
@@ -152,7 +153,7 @@ namespace Repository
             {
                 SQLiteCommand cmd = connection.CreateCommand();
                 SQLiteTransaction transaction = connection.BeginTransaction();
-                cmd.CommandText = @"INSERT INTO Diaries (DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Certifier, Uploaded, ReportDate) VALUES (@DiaryNumber, @Aruc, @DiaryYear, @DiaryDate, @CycleDate, @CycleNumber, @Branch, @Certifier, @Uploaded, @ReportDate);";
+                cmd.CommandText = @"INSERT INTO Diaries (DiaryNumber, Aruc, DiaryYear, DiaryDate, CycleDate, CycleNumber, Branch, Certifier, Uploaded, ReportDate, Confirmed) VALUES (@DiaryNumber, @Aruc, @DiaryYear, @DiaryDate, @CycleDate, @CycleNumber, @Branch, @Certifier, @Uploaded, @ReportDate, @Confirmed);";
                 cmd.Parameters.AddWithValue("@DiaryNumber", "");
                 cmd.Parameters.AddWithValue("@Aruc", "");
                 cmd.Parameters.AddWithValue("@DiaryYear", "");
@@ -163,6 +164,7 @@ namespace Repository
                 cmd.Parameters.AddWithValue("@Uploaded", "");
                 cmd.Parameters.AddWithValue("@ReportDate", "");
                 cmd.Parameters.AddWithValue("@Certifier", "");
+                cmd.Parameters.AddWithValue("@Confirmed", false);
                 foreach (var diary in diaries)
                 {
                     //Console.Clear();
@@ -234,13 +236,13 @@ namespace Repository
                                          Certifier, CertifierRank, CertifierFirstName, CertifierLastName, CertifierMI, 
                                          Preparer, PreparerRank, PreparerFirstName, PreparerLastName, PreparerMI, 
                                          Member, MemberRank, MemberFirstName, MemberLastName, MemberMI, 
-                                         TTC, TTS, EnglishStatement, HistoryStatement, TransactionErrorCode)
+                                         TTC, TTS, EnglishStatement, HistoryStatement, TransactionErrorCode, DocumentRequired)
                                          VALUES
                                         (@DiaryNumber, @DiaryYear, @ARUC, @Branch, @Certifier, 
                                          @CertifierRank, @CertifierFirstName, @CertifierLastName, @CertifierMI,
                                          @Preparer, @PreparerRank, @PreparerFirstName, @PreparerLastName, @PreparerMI,
                                          @Member, @MemberRank, @MemberFirstName, @MemberLastName, @MemberMI, 
-                                         @TTC, @TTS, @EnglishStatement, @HistoryStatement, @TransactionErrorCode);";
+                                         @TTC, @TTS, @EnglishStatement, @HistoryStatement, @TransactionErrorCode, @DocumentRequired);";
                     cmd.Parameters.AddWithValue("@DiaryNumber", "");
                     cmd.Parameters.AddWithValue("@DiaryYear", "");
                     cmd.Parameters.AddWithValue("@ARUC", "");
@@ -265,6 +267,7 @@ namespace Repository
                     cmd.Parameters.AddWithValue("@EnglishStatement", "");
                     cmd.Parameters.AddWithValue("@HistoryStatement", "");
                     cmd.Parameters.AddWithValue("@TransactionErrorCode", "");
+                    cmd.Parameters.AddWithValue("@DocumentRequired", "");
                     foreach (var trans in transactions.Where(o => o.DiaryNumber == diary.Number).ToList())
                     {
                         Console.WriteLine($"Inserting Transaction for {trans.DiaryNumber}, {trans.TTC}, {trans.TTS}");
@@ -292,6 +295,7 @@ namespace Repository
                         cmd.Parameters["@EnglishStatement"].Value = trans.EnglishStatement;
                         cmd.Parameters["@HistoryStatement"].Value = trans.HistoryStatement;
                         cmd.Parameters["@TransactionErrorCode"].Value = trans.TransactionErrorCode;
+                        cmd.Parameters["@DocumentRequired"].Value = trans.DocumentRequired;
                         cmd.ExecuteNonQuery();
                     }
                     transaction.Commit();

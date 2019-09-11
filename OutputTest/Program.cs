@@ -12,20 +12,9 @@ namespace OutputTest
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Beginning");
-            Console.Write("File...>");
-            string FileLocation = Console.ReadLine();
-            new BuilderTest().RunCollectionBuild(FileLocation);
-            Console.WriteLine("Main");
+            IniTest test = new IniTest();
+            test.ReadData();
             Console.ReadLine();
-        }
-
-        private static void CheckOutput()
-        {
-            string path = Path.GetFullPath(@".\");
-            string trim = path.Remove(path.Length - 10, 10);
-            Console.WriteLine(path);
-            Console.WriteLine(trim);
         }
     }
 }

@@ -141,6 +141,7 @@ namespace Repository
                             if (values[24] != string.Empty) { transaction.TransactionErrorCode = values[24]; }
                             if (values[25] != string.Empty) { transaction.EnglishStatement = values[25].TrimEnd(' '); }
                             if (values[26] != string.Empty) { transaction.HistoryStatement = values[26].TrimEnd(' '); }
+                            if (values[28] != string.Empty) { transaction.DocumentRequired = values[28].TrimEnd(' '); }
                             transaction.ARUC = aruc;
                             transaction.DiaryYear = year;
                             transaction.Member = Member;

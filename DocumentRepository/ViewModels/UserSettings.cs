@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -38,6 +39,10 @@ namespace DocumentRepository.ViewModels
             CurrentYear = AppSettings.Year;
             CurrentArucs = arucs;
             CurrentYears = years;
+            IsPreparer = Visibility.Collapsed;
+            IsApprover = Visibility.Collapsed;
+            IsVerifier = Visibility.Collapsed;
+            OpenBox = false;
         }
 
         private async void SetUpUser()
@@ -45,6 +50,7 @@ namespace DocumentRepository.ViewModels
             arucs = await new Database().GetArucs();
             years = await new Database().GetYears();
             User = await new User().GetUserSettings();
+            PinCodes = await new PinCode().GetPinCodes();
 
             if (string.IsNullOrEmpty(User.BackgroundPath))
             {
@@ -283,6 +289,122 @@ namespace DocumentRepository.ViewModels
                 User.BackgroundPath = await new FileOperation().CopyFile(User);
             }
             new Database().UpdateEntry(User);
+        }
+
+        private IList<PinCode> pinCodes;
+        public IList<PinCode> PinCodes
+        {
+            get
+            {
+                return pinCodes;
+            }
+            set
+            {
+                pinCodes = value;
+                OnPropertyChanged("PinCodes");
+            }
+        }
+
+        private Visibility isVerifier;
+        public Visibility IsVerifier
+        {
+            get
+            {
+                return isVerifier;
+            }
+            set
+            {
+                isVerifier = value;
+                OnPropertyChanged("IsVerfier");
+            }
+        }
+
+        private Visibility isPreparer;
+        public Visibility IsPreparer
+        {
+            get
+            {
+                return isPreparer;
+            }
+            set
+            {
+                isPreparer = value;
+                OnPropertyChanged("IsPreparer");
+            }
+        }
+
+        private Visibility isApprover;
+        public Visibility IsApprover
+        {
+            get
+            {
+                return isApprover;
+            }
+            set
+            {
+                isApprover = value;
+                OnPropertyChanged("IsApprover");
+            }
+        }
+
+        private bool openBox;
+        public bool OpenBox
+        {
+            get
+            {
+                return openBox;
+            }
+            set
+            {
+                openBox = value;
+                OnPropertyChanged("OpenBox");
+            }
+        }
+
+        private int pinCode;
+        public int PinCode
+        {
+            get
+            {
+                return pinCode;
+            }
+            set
+            {
+                pinCode = value;
+                CheckAuthority();
+                OnPropertyChanged("PinCode");
+            }
+        }
+
+        private void CheckAuthority()
+        {
+            IsPreparer = Visibility.Collapsed;
+            IsApprover = Visibility.Collapsed;
+            IsVerifier = Visibility.Collapsed;
+            OpenBox = false;
+            if(PinCode == getPin("Verifier"))
+            {
+                IsVerifier = Visibility.Visible;
+                OpenBox = true;
+            }
+            if(PinCode == getPin("Approver"))
+            {
+                IsApprover = Visibility.Visible;
+                IsVerifier = Visibility.Visible;
+                IsPreparer = Visibility.Visible;
+                OpenBox = true;
+            }
+            if(PinCode == getPin("Preparer"))
+            {
+                IsVerifier = Visibility.Visible;
+                IsPreparer = Visibility.Visible;
+                OpenBox = true;
+            }
+        }
+
+        private int getPin(string programName)
+        {
+            return PinCodes.Where(x => x.ProgramName == programName).First().Pin;
         }
     }
 }

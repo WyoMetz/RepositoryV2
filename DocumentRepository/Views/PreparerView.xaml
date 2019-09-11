@@ -1,0 +1,302 @@
+﻿<Page x:Class="DocumentRepository.Views.PreparerView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:DocumentRepository.ViewModels" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="16" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" Title="PreparerView">
+		<Page.DataContext>
+				<local:PreparerViewModel />
+		</Page.DataContext>
+		<Page.Resources>
+				<ResourceDictionary>
+				<BooleanToVisibilityConverter x:Key='BoolToVis' />
+						<ResourceDictionary.MergedDictionaries>
+								<ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+						</ResourceDictionary.MergedDictionaries>
+				</ResourceDictionary>
+		</Page.Resources>
+		<Grid>
+				<Grid.RowDefinitions>
+						<RowDefinition Height='98*' />
+						<RowDefinition Height='2*' />
+				</Grid.RowDefinitions>
+				<ProgressBar Grid.Row='1' IsIndeterminate='True' Visibility='{Binding Path=IsVisible, Converter={StaticResource BoolToVis}}' />
+				<Grid Margin='4'>
+						<Grid.ColumnDefinitions>
+								<ColumnDefinition Width='30*' />
+								<ColumnDefinition Width='50*' />
+								<ColumnDefinition Width='20*' />
+						</Grid.ColumnDefinitions>
+						<Grid Margin='4'>
+								<Grid.RowDefinitions>
+										<RowDefinition Height='60*' />
+										<RowDefinition Height='40*' />
+								</Grid.RowDefinitions>
+								<materialDesign:Card Margin='8' VerticalAlignment='Stretch'>
+										<Grid>
+												<Grid.RowDefinitions>
+														<RowDefinition Height='10*' />
+														<RowDefinition Height='80*' />
+														<RowDefinition Height='10*' />
+												</Grid.RowDefinitions>
+												<StackPanel Margin='4'>
+														<StackPanel Orientation='Horizontal'>
+																<TextBlock Text='Batch Documents: ' />
+																<TextBlock Text='{Binding BatchTransactions.Count}' HorizontalAlignment='Right' />
+														</StackPanel>
+														<StackPanel Orientation='Horizontal'>
+																<TextBlock Text='Created By: ' />
+																<TextBlock Text='{Binding SelectedBatch.CreatedBy}' Margin='0,0,8,0'/>
+																<TextBlock Text='Created On: ' />
+																<TextBlock Text='{Binding SelectedBatch.CreatedOn}' Margin='0,0,8,0'/>
+														</StackPanel>
+												</StackPanel>
+												<DataGrid Grid.Row='1' Margin='4' ItemsSource='{Binding BatchTransactions}' SelectedItem='{Binding SelectedTransaction}' AutoGenerateColumns='False' CanUserAddRows='False'>
+														<DataGrid.Columns>
+																<DataGridTextColumn Header='Document' Binding='{Binding Transaction.DocumentRequired}' />
+																<DataGridTextColumn Header='Diary' Binding='{Binding Transaction.DiaryNumber}' />
+																<DataGridTextColumn Header='Member' Binding='{Binding Transaction.Member.EDIPI}' />
+																<DataGridTextColumn Header='Last Name' Binding='{Binding Transaction.Member.LastName}' />
+																<DataGridTemplateColumn>
+																		<DataGridTemplateColumn.CellTemplate>
+																				<DataTemplate>
+																						<Button Command='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.RemoveFromBatch}' Style="{StaticResource MaterialDesignFlatButton}">
+																								<Button.Content>
+																										<StackPanel Orientation='Horizontal'>
+																												<TextBlock Text=' Remove ' />
+																												<materialDesign:PackIcon Kind='Transfer' />
+																										</StackPanel>
+																								</Button.Content>
+																						</Button>
+																				</DataTemplate>
+																		</DataGridTemplateColumn.CellTemplate>
+																</DataGridTemplateColumn>
+														</DataGrid.Columns>
+												</DataGrid>
+												<materialDesign:Snackbar MessageQueue='{Binding BatchMessage}' Grid.Row='1'/>
+												<materialDesign:DialogHost Grid.Row='2' IsOpen='{Binding BatchDialogOpen}'>
+														<materialDesign:DialogHost.DialogContent>
+																<StackPanel Margin='8'>
+																		<TextBlock Text='Enter ODI Batch Number' />
+																		<TextBox Text='{Binding SelectedBatch.BatchNumber, UpdateSourceTrigger=PropertyChanged}' />
+																		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+																				<Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="{Binding AcceptBatchDialog}">SEND</Button>
+																				<Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="{Binding CancelBatchDialog}">CANCEL</Button>
+																		</StackPanel>
+																</StackPanel>
+														</materialDesign:DialogHost.DialogContent>
+														<Button Grid.Row='2' Margin='4' Command='{Binding OpenBatchDialog}'>
+																<Button.Content>
+																		<StackPanel Orientation='Horizontal'>
+																				<materialDesign:PackIcon Kind='BookSecure' />
+																				<TextBlock Text='Send to Approver' />
+																		</StackPanel>
+																</Button.Content>
+														</Button>
+												</materialDesign:DialogHost>
+										</Grid>
+								</materialDesign:Card>
+								<materialDesign:Card Grid.Row='1' Margin='4' VerticalAlignment='Stretch'>
+										<Grid Margin='4'>
+												<Grid.RowDefinitions>
+														<RowDefinition Height='10*' />
+														<RowDefinition Height='80*' />
+														<RowDefinition Height='10*' />
+												</Grid.RowDefinitions>
+												<StackPanel Margin='4'>
+														<TextBlock Text='Available Batches' />
+												</StackPanel>
+												<DataGrid Grid.Row='1' Margin='4' ItemsSource='{Binding Batches}' SelectedItem='{Binding SelectedBatch}' AutoGenerateColumns='False' CanUserAddRows='False'>
+														<DataGrid.Columns>
+														<DataGridTextColumn Header='ID' Binding='{Binding ID}' />
+														<DataGridTextColumn Header='Created By' Binding='{Binding CreatedBy}' />
+														<DataGridTextColumn Header='Created On' Binding='{Binding CreatedOn}' />
+														<DataGridTextColumn Header='Batch Number' Binding='{Binding BatchNumber}' />
+														</DataGrid.Columns>
+												</DataGrid>
+												<Button Grid.Row='2' Margin='4' Command='{Binding CreateBatch}'>
+														<Button.Content>
+																<StackPanel Orientation='Horizontal'>
+																		<materialDesign:PackIcon Kind='NewBox' />
+																		<TextBlock Text='Create new Batch' />
+																</StackPanel>
+														</Button.Content>
+												</Button>
+										</Grid>
+								</materialDesign:Card>
+						</Grid>
+						<materialDesign:Card Grid.Column='1' VerticalAlignment='Stretch' Margin='4'>
+								<Grid Margin='4'>
+										<Grid.RowDefinitions>
+												<RowDefinition Height='5*' />
+												<RowDefinition Height='90*' />
+												<RowDefinition Height='5*' />
+										</Grid.RowDefinitions>
+										<Grid Grid.Row='0' Margin='4'>
+												<Grid.ColumnDefinitions>
+														<ColumnDefinition Width='45*' />
+														<ColumnDefinition Width='10*' />
+														<ColumnDefinition Width='50*' />
+												</Grid.ColumnDefinitions>
+												<TextBlock Text='Documents Awaiting Batches' VerticalAlignment='Bottom' Margin='8,0,0,0' Grid.Row='1' />
+												<TextBlock Text='{Binding EsrTransactions.Count}' VerticalAlignment='Bottom' HorizontalAlignment='Right' />
+												<materialDesign:PackIcon Kind='Search' Grid.Row='1' MinHeight='35' MinWidth='35' HorizontalAlignment='Right' VerticalAlignment='Bottom' Grid.Column='1' />
+												<TextBox materialDesign:HintAssist.Hint='Search' Grid.Row='1' Grid.Column='2' materialDesign:HintAssist.IsFloating='True' FontSize='16' Text='{Binding Search, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}' />
+										</Grid>
+										<materialDesign:Snackbar MessageQueue='{Binding TransactionMessage}' Grid.Row='0' />
+										<DataGrid Grid.Row='1' Margin='4' ItemsSource='{Binding EsrTransactions}' SelectedItem='{Binding SelectedTransaction}' AutoGenerateColumns='False' CanUserAddRows='False'>
+												<DataGrid.Columns>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<TextBlock Text='{Binding ConfirmWait}' />
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+																<DataGridTemplateColumn.HeaderTemplate>
+																		<DataTemplate>
+																				<StackPanel>
+																						<TextBlock Text='Days' />
+																						<TextBlock Text='Awaiting' />
+																						<TextBlock Text='Batching' />
+																				</StackPanel>
+																		</DataTemplate>
+																</DataGridTemplateColumn.HeaderTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.Header>
+																		<TextBlock Text='Diary' HorizontalAlignment='Center'/>
+																</DataGridTemplateColumn.Header>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<Button Command='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.ViewDoc}' Style="{DynamicResource MaterialDesignFlatButton}">
+																						<Button.Content>
+																								<StackPanel Orientation='Horizontal'>
+																										<TextBlock Text='{Binding Transaction.DiaryNumber}' />
+																										<materialDesign:PackIcon Kind='Paperclip' />
+																								</StackPanel>
+																						</Button.Content>
+																				</Button>
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<TextBlock Text='{Binding Transaction.DocumentRequired}' />
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+																<DataGridTemplateColumn.HeaderTemplate>
+																		<DataTemplate>
+																				<Grid>
+																						<Grid.RowDefinitions>
+																								<RowDefinition />
+																								<RowDefinition />
+																						</Grid.RowDefinitions>
+																						<TextBlock Text='Document Required' />
+																						<ComboBox Grid.Row='1' ItemsSource='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DocumentTypes}' SelectedValue='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Filter}' />
+																				</Grid>
+																		</DataTemplate>
+																</DataGridTemplateColumn.HeaderTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTextColumn Header='Member EDIPI' Binding='{Binding Transaction.Member.EDIPI}' />
+														<DataGridTextColumn Header='Last Name' Binding='{Binding Transaction.Member.LastName}' />
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.HeaderTemplate>
+																		<DataTemplate>
+																				<TextBlock Text='Add to Batch' />
+																		</DataTemplate>
+																</DataGridTemplateColumn.HeaderTemplate>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<Button Command='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.AddToBatch}' Style="{StaticResource MaterialDesignFlatButton}">
+																						<Button.Content>
+																								<StackPanel Orientation='Horizontal'>
+																										<materialDesign:PackIcon Kind='Backburger' />
+																										<TextBlock Text=' Add ' />
+																								</StackPanel>
+																						</Button.Content>
+																				</Button>
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.HeaderTemplate>
+																		<DataTemplate>
+																				<StackPanel>
+																						<TextBlock Text='Missing Document' />
+																						<TextBlock Text='Or' />
+																						<TextBlock Text='Document not' />
+																						<TextBlock Text='Required' />
+																				</StackPanel>
+																		</DataTemplate>
+																</DataGridTemplateColumn.HeaderTemplate>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<Button Command='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.OpenTransactionDialog}' Style="{StaticResource MaterialDesignFlatButton}">
+																								<Button.Content>
+																										<StackPanel Orientation='Horizontal'>
+																												<materialDesign:PackIcon Kind='CloseOctagon' />
+																												<TextBlock Text=' Reject ' />
+																										</StackPanel>
+																								</Button.Content>
+																						</Button>
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+														</DataGridTemplateColumn>
+												</DataGrid.Columns>
+										</DataGrid>
+										<Button Grid.Row='2' Command='{Binding GetReport}'>
+												<Button.Content>
+														<StackPanel Orientation='Horizontal'>
+																<materialDesign:PackIcon Kind='ViewList' />
+																<TextBlock Text='Get Report' />
+														</StackPanel>
+												</Button.Content>
+										</Button>
+								</Grid>	
+						</materialDesign:Card>
+						<materialDesign:Card Grid.Column='2' Margin='4'>
+								<Grid Margin='4'>
+										<Grid.RowDefinitions>
+												<RowDefinition Height='10*' />
+												<RowDefinition Height='10*' />
+												<RowDefinition Height='90*' />
+										</Grid.RowDefinitions>
+										<StackPanel Margin='4' Visibility='{Binding UploadVisibility}'>
+												<TextBlock Text='Attached Document' />
+												<Button Style="{StaticResource MaterialDesignFlatButton}" Command='{Binding ViewAttached}'>
+														<Button.Content>
+																<StackPanel Orientation='Horizontal'>
+																		<materialDesign:PackIcon Kind='NoteText' />
+																		<TextBlock Text=' View Document ' />
+																</StackPanel>
+														</Button.Content>
+												</Button>
+										</StackPanel>
+										<TextBlock Text='Comments' Margin='4' Grid.Row='1'/>
+										<ListBox Grid.Row='2' Margin='4' ItemsSource='{Binding Comments}'>
+												<ListBox.ItemTemplate>
+														<DataTemplate>
+																<StackPanel Margin='0,0,0,8'>
+																		<StackPanel Orientation='Horizontal'>
+																				<TextBlock Text='{Binding CreatedBy}' Margin='0,0,8,0'/>
+																				<TextBlock Text='{Binding CreatedOn}' />
+																		</StackPanel>
+																		<Separator />
+																		<TextBlock Text='{Binding CommentText}' TextWrapping='Wrap' />
+																</StackPanel>
+														</DataTemplate>
+												</ListBox.ItemTemplate>
+										</ListBox>
+								</Grid>
+						</materialDesign:Card>
+						<materialDesign:DialogHost IsOpen='{Binding TransactionDialogOpen}' CloseOnClickAway='True' Grid.ColumnSpan='3'>
+								<materialDesign:DialogHost.DialogContent>
+										<StackPanel Margin='8'>
+												<TextBlock Text='Enter any Rejection Comments' />
+												<TextBox Text='{Binding TransactionComment.CommentText, UpdateSourceTrigger=PropertyChanged}' Style='{StaticResource MaterialDesignOutlinedTextFieldTextBox}' AcceptsReturn='True' TextWrapping='Wrap' materialDesign:HintAssist.Hint='Enter any Comments' materialDesign:HintAssist.IsFloating='True' />
+												<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+														<Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="{Binding AcceptTransactionDialog}">ACCEPT</Button>
+														<Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="{Binding CancelTransactionDialog}">CANCEL</Button>
+												</StackPanel>
+										</StackPanel>
+								</materialDesign:DialogHost.DialogContent>
+						</materialDesign:DialogHost>
+				</Grid>
+		</Grid>
+</Page>

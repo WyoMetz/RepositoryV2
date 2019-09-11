@@ -1,0 +1,161 @@
+﻿<Page x:Class="DocumentRepository.Views.VerifierView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mpp="clr-namespace:MoonPdfLib;assembly=MoonPdfLib" xmlns:local="clr-namespace:DocumentRepository.ViewModels" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Medium" TextElement.FontSize="16" FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" Title="VerifierView">
+		<Page.DataContext>
+				<local:VerfierViewModel />
+		</Page.DataContext>
+		<Page.Resources>
+				<BooleanToVisibilityConverter x:Key='BoolToVis' />
+		</Page.Resources>
+		<Grid>
+				<Grid Margin='4'>
+						<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+								<RowDefinition Height='98*' />
+								<RowDefinition Height='2*' />
+						</Grid.RowDefinitions>
+						<ProgressBar Grid.Row='1' Grid.ColumnSpan='2' IsIndeterminate='True' Visibility='{Binding Path=IsVisible, Converter={StaticResource BoolToVis}}' />
+						<materialDesign:Card Margin='4' VerticalAlignment='Stretch'>
+								<Grid Margin='4'>
+										<Grid.RowDefinitions>
+												<RowDefinition Height='5*' />
+												<RowDefinition Height='90*' />
+												<RowDefinition Height='5*' />
+										</Grid.RowDefinitions>
+										<Grid Grid.Row='0' Margin='4'>
+														<Grid.ColumnDefinitions>
+																<ColumnDefinition Width='35*' />
+																<ColumnDefinition Width='10*' />
+																<ColumnDefinition Width='60*' />
+														</Grid.ColumnDefinitions>
+														<TextBlock Text='Uploaded Diaries' VerticalAlignment='Bottom' Margin='8,0,0,0' Grid.Row='1' />
+														<TextBlock Text='{Binding UnitDiaries.Count}' VerticalAlignment='Bottom' HorizontalAlignment='Right' />
+														<materialDesign:PackIcon Kind='Search' Grid.Row='1' MinHeight='35' MinWidth='35' HorizontalAlignment='Right' VerticalAlignment='Bottom' Grid.Column='1' />
+														<TextBox materialDesign:HintAssist.Hint='Search' Grid.Row='1' Grid.Column='2' materialDesign:HintAssist.IsFloating='True' FontSize='16' Text='{Binding Search, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}' />
+												</Grid>
+												<DataGrid Grid.Row='1' Margin='4' ItemsSource='{Binding UnitDiaries}' SelectedItem='{Binding SelectedDiary}' AutoGenerateColumns='False' CanUserAddRows='False'>
+												<DataGrid.Columns>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<TextBlock Text='{Binding ConfirmWait}' />
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+																<DataGridTemplateColumn.HeaderTemplate>
+																		<DataTemplate>
+																				<StackPanel>
+																						<TextBlock Text='Days' />
+																						<TextBlock Text='Awaiting' />
+																						<TextBlock Text='Confirmation' />
+																				</StackPanel>
+																		</DataTemplate>
+																</DataGridTemplateColumn.HeaderTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTemplateColumn>
+																<DataGridTemplateColumn.CellTemplate>
+																		<DataTemplate>
+																				<TextBlock Text='{Binding Branch}' />
+																		</DataTemplate>
+																</DataGridTemplateColumn.CellTemplate>
+																<DataGridTemplateColumn.HeaderTemplate>
+																		<DataTemplate>
+																				<Grid>
+																						<Grid.RowDefinitions>
+																								<RowDefinition />
+																								<RowDefinition />
+																						</Grid.RowDefinitions>
+																						<TextBlock Text='Branch' />
+																						<ComboBox Grid.Row='1' ItemsSource='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Branches}' SelectedValue='{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Filter}' />
+																				</Grid>
+																		</DataTemplate>
+																</DataGridTemplateColumn.HeaderTemplate>
+														</DataGridTemplateColumn>
+														<DataGridTextColumn Header='Diary Number' Binding='{Binding Number}' />
+														<DataGridTextColumn Header='Cycle' Binding='{Binding CycleNumber}' />
+														<DataGridTextColumn Header='Cycle Date' Binding='{Binding CycleDate}' />
+														<DataGridTextColumn Header='Certifier' Binding='{Binding Certifier}' />
+												</DataGrid.Columns>
+										</DataGrid>
+										<Button Grid.Row='2' Command='{Binding GetReport}'>
+												<Button.Content>
+														<StackPanel Orientation='Horizontal'>
+																<materialDesign:PackIcon Kind='ViewList' />
+																<TextBlock Text='Get Report' />
+														</StackPanel>
+												</Button.Content>
+										</Button>
+								</Grid>
+						</materialDesign:Card>
+						<materialDesign:Card Margin='4' VerticalAlignment='Stretch' Grid.Column='1'>
+								<Grid Margin='4'>
+										<Grid.RowDefinitions>
+												<RowDefinition Height='8*' />
+												<RowDefinition Height='90*' />
+												<RowDefinition Height='10*' />
+										</Grid.RowDefinitions>
+										<StackPanel>
+												<StackPanel Orientation='Horizontal' Margin='4' VerticalAlignment='Center'>
+														<TextBlock Text='Diary: ' />
+														<TextBlock Text='{Binding SelectedDiary.Number}' Margin='0,0,8,0'/>
+														<TextBlock Text='Cycle: ' />
+														<TextBlock Text='{Binding SelectedDiary.CycleNumber}' Margin='0,0,8,0'/>
+														<TextBlock Text='Branch: ' />
+														<TextBlock Text='{Binding SelectedDiary.Branch}' Margin='0,0,8,0'/>
+												</StackPanel>
+												<StackPanel Orientation='Horizontal' Margin='4' VerticalAlignment='Center'>
+														<TextBlock Text='Certifier: ' />
+														<TextBlock Text='{Binding SelectedDiary.Certifier}' Margin='0,0,8,0'/>
+														<TextBlock Text='Uploaded By: ' />
+														<TextBlock Text='{Binding SelectedDiary.UploadedBy}' Margin='0,0,8,0'/>
+														<TextBlock Text='Uploaded On: ' />
+														<TextBlock Text='{Binding SelectedDiary.UploadedOn}' Margin='0,0,8,0'/>
+												</StackPanel>
+										</StackPanel>
+										<Rectangle Grid.Row='1' Fill='DarkGray' />
+										<ContentPresenter Content='{Binding PdfPanel}' Grid.Row='1' Margin='4'/>
+										<materialDesign:Snackbar Grid.Row='1' MessageQueue='{Binding Message}'/>
+										<Grid Grid.Row='2' Margin='4'>
+												<Button HorizontalAlignment='Left' Command='{Binding PreviousPage}' Style="{StaticResource MaterialDesignFlatButton}">
+														<Button.Content>
+																<StackPanel Orientation='Horizontal'>
+																		<materialDesign:PackIcon Kind='ArrowLeft' />
+																		<TextBlock Text=' Previous Page ' />
+																</StackPanel>
+														</Button.Content>
+												</Button>
+												<Button HorizontalAlignment='Right' Command='{Binding NextPage}' Style="{StaticResource MaterialDesignFlatButton}">
+														<Button.Content>
+																<StackPanel Orientation='Horizontal'>
+																		<TextBlock Text=' Next Page ' />
+																		<materialDesign:PackIcon Kind='ArrowRight' />
+																</StackPanel>
+														</Button.Content>
+												</Button>
+												<StackPanel Orientation='Horizontal' HorizontalAlignment='Center'>
+														<Button Command='{Binding AcceptUpload}' Margin='4'>
+																<Button.Content>
+																		<StackPanel Orientation='Horizontal'>
+																				<materialDesign:PackIcon Kind='Check' />
+																				<TextBlock Text='Accept Upload' />
+																		</StackPanel>
+																</Button.Content>
+														</Button>
+														<Button Command='{Binding RejectUpload}' Margin='4' Style='{StaticResource MaterialDesignRaisedAccentButton}'>
+																<Button.Content>
+																		<StackPanel Orientation='Horizontal'>
+																				<materialDesign:PackIcon Kind='Cancel' />
+																				<TextBlock Text='Reject Upload' />
+																		</StackPanel>
+																</Button.Content>
+														</Button>
+														</StackPanel>
+										</Grid>
+								</Grid>
+						</materialDesign:Card>
+				</Grid>
+    </Grid>
+</Page>

@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Repository
 {
-    public class Transaction : BaseReportable, IReportable, IViewable, ITransactable
+    public class Transaction : BaseReportable, IReportable, IViewable, ITransactable, IStorable
     {
         public Marine Certifier { get; set; }
         public Marine Member { get; set; }
@@ -27,9 +28,10 @@ namespace Repository
         public string DocumentRequired { get; set; }
         public bool DocumentMissing { get; set; }
         public bool DocumentAttached { get; set; }
-        public int BatchNumber { get; set; }
+        public string BatchNumber { get; set; }
         public DateTime UpdateDate { get; set; }
         public string UploadLocation { get; set; }
+        public string CurrentFilePath { get; set; }
 
         public override string ToString()
         {
@@ -48,7 +50,7 @@ namespace Repository
         public async Task<IList<Transaction>> GetTransactionInfomration(UnitDiary diary)
         {
             Transaction transaction = new Transaction { ARUC = diary.Aruc, DiaryYear = diary.Year, DiaryNumber = diary.Number };
-            string commandText = $@"SELECT TTC, TTS, EnglishStatement, HistoryStatement, TransactionErrorCode, Certifier, CertifierRank, CertifierLastName, CertifierFirstName, Preparer, PreparerRank, PreparerLastName, PreparerFirstName, Member, MemberRank, MemberLastName, MemberFirstName, DiaryNumber, UploadLocation, ARUC, DiaryYear, Branch, DocumentRequired, DocumentMissing, DocumentAttached, UpdateDate, BatchNumber
+            string commandText = $@"SELECT TTC, TTS, EnglishStatement, HistoryStatement, TransactionErrorCode, Certifier, CertifierRank, CertifierLastName, CertifierFirstName, Preparer, PreparerRank, PreparerLastName, PreparerFirstName, Member, MemberRank, MemberLastName, MemberFirstName, DiaryNumber, DiaryUploadLocation, ARUC, DiaryYear, Branch, DocumentRequired, DocumentMissing, DocumentAttached, UpdateDate, BatchNumber
                                     FROM Transactions 
                                     WHERE DiaryNumber = '{diary.Number}' ORDER BY Member ASC;";
             return await GetTransactionsAsync(commandText, transaction);
@@ -157,7 +159,6 @@ namespace Repository
                             bool.TryParse(values[23].ToString(), out missing);
                             bool.TryParse(values[24].ToString(), out attached);
                             DateTime.TryParse(values[25].ToString(), out now);
-                            int.TryParse(values[26].ToString(), out batchNumber);
                             Marine Certifier = new Marine { EDIPI = int.Parse(values[5].ToString()), Rank = values[6].ToString(), LastName = values[7].ToString(), FirstName = values[8].ToString() };
                             Marine Preparer = new Marine { EDIPI = int.Parse(values[9].ToString()), Rank = values[10].ToString(), LastName = values[11].ToString(), FirstName = values[12].ToString() };
                             Marine Member = new Marine { EDIPI = int.Parse(values[13].ToString()), Rank = values[14].ToString(), LastName = values[15].ToString(), FirstName = values[16].ToString() };
@@ -180,7 +181,7 @@ namespace Repository
                                 DocumentMissing = missing,
                                 DocumentAttached = attached,
                                 UpdateDate = now,
-                                BatchNumber = batchNumber
+                                BatchNumber = values[26].ToString()
                             });
                         }
                         reader.Close();
@@ -189,7 +190,7 @@ namespace Repository
             }
             catch(Exception ex)
             {
-                MessageBox.Show("An Error ocurred reading the Database: " + ex.Message.ToString(), "Database Read Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("An Error ocurred reading the Transaction Database: " + ex.Message.ToString(), "Database Read Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return transactions;
         }
@@ -315,6 +316,12 @@ namespace Repository
         public string Delete()
         {
             throw new NotImplementedException();
+        }
+
+        public string FileStoragePath()
+        {
+            string fileName = Path.GetFileName(CurrentFilePath);
+            return $@"{ARUC}\{DiaryYear}\{DiaryNumber}\{Member.EDIPI}.{TTC}.{TTS}.{fileName}";
         }
     }
 }

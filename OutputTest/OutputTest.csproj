@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="BuilderTest.cs" />
     <Compile Include="Filewritertest.cs" />
+    <Compile Include="IniFile.cs" />
+    <Compile Include="IniTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Times.cs" />

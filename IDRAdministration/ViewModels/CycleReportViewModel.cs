@@ -24,15 +24,21 @@ namespace IDRAdministration.ViewModels
             IsVisible = true;
             Arucs = await new Database().GetArucs();
             Years = await new Database().GetYears();
-            AppSettings.Aruc = Arucs.FirstOrDefault();
-            AppSettings.Year = DateTime.Now.Year;
-            CurrentArucs = Arucs;
-            CurrentYears = Years;
-            CurrentAruc = Arucs.First();
-            CurrentYear = DateTime.Now.Year;
-            IList<Marine> tempMarinelist = await marine.GetMarines();
-            TotalMarines = tempMarinelist.Count;
-            IList<User> tempUserList = await user.GetUsers();
+            if(Arucs.Count != 0)
+            {
+                if (Years.Count != 0)
+                {
+                    AppSettings.Aruc = Arucs.FirstOrDefault();
+                    AppSettings.Year = DateTime.Now.Year;
+                    CurrentArucs = Arucs;
+                    CurrentYears = Years;
+                    CurrentAruc = Arucs.First();
+                    CurrentYear = DateTime.Now.Year;
+                    IList<Marine> tempMarinelist = await marine.GetMarines();
+                    TotalMarines = tempMarinelist.Count;
+                    IList<User> tempUserList = await user.GetUsers();
+                }
+            }
             isVisible = false;
         }
 
@@ -232,20 +238,6 @@ namespace IDRAdministration.ViewModels
             }
         }
 
-        private int progressTimer;
-        public int ProgressTimer
-        {
-            get
-            {
-                return progressTimer;
-            }
-            set
-            {
-                progressTimer = value;
-                OnPropertyChanged("ProgressTimer");
-            }
-        }
-
         #endregion
 
         #region Commands
@@ -282,7 +274,6 @@ namespace IDRAdministration.ViewModels
 
         private async void ExecuteUploadCSV()
         {
-            Task.Run(() => RunTimer());
             OverlayVisible = true;
             await Task.Run(() => new Database().InsertInformation(collection));
             OverlayVisible = false;
@@ -304,19 +295,6 @@ namespace IDRAdministration.ViewModels
             else
             {
                 return false;
-            }
-        }
-
-        private async Task RunTimer()
-        {
-            ProgressTimer = 1;
-            decimal counter = 0;
-            foreach (var diary in collection.Diaries)
-            {
-                counter++;
-                decimal totalprogress = (counter / cycleDiaries) * 100;
-                ProgressTimer = Convert.ToInt32(totalprogress);
-                await Task.Delay(3);
             }
         }
 
@@ -374,8 +352,11 @@ namespace IDRAdministration.ViewModels
             set
             {
                 currentYear = value;
-                AppSettings.Year = value;
-                Task.Run(() => SetDiaries());
+                if(CurrentYear != 0)
+                {
+                    AppSettings.Year = value;
+                    Task.Run(() => SetDiaries());
+                }
                 OnPropertyChanged("CurrentYear");
             }
         }
@@ -390,8 +371,11 @@ namespace IDRAdministration.ViewModels
             set
             {
                 currentAruc = value;
-                AppSettings.Aruc = value;
-                Task.Run(() => SetDiaries());
+                if(CurrentAruc != 0)
+                {
+                    AppSettings.Aruc = value;
+                    Task.Run(() => SetDiaries());
+                }
                 OnPropertyChanged("CurrentAruc");
             }
         }

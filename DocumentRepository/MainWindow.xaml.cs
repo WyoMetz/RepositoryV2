@@ -101,5 +101,25 @@ namespace DocumentRepository
         {
             ContentFrame.Navigate(new Views.TransactionResearch());
         }
+
+        private void OverallStats_Click(object sender, RoutedEventArgs e)
+        {
+            ContentFrame.Navigate(new Views.VerifierView());
+        }
+
+        private void PreparerStats_Click(object sender, RoutedEventArgs e)
+        {
+            ContentFrame.Navigate(new Views.PreparerView());
+        }
+
+        private void CertifierStats_Click(object sender, RoutedEventArgs e)
+        {
+            ContentFrame.Navigate(new Views.ApproverView());
+        }
+
+        private void RejectionUpload_Click(object sender, RoutedEventArgs e)
+        {
+            ContentFrame.Navigate(new Views.RejectionsView());
+        }
     }
 }
