@@ -1,0 +1,170 @@
+.open Repository.db
+
+--UserTable
+CREATE TABLE UserTable (UserName PRIMARY KEY UNIQUE, Aruc INTEGER, Background TEXT, PrimaryColor VARCHAR(30), SecondaryColor VARCHAR(30), UsesDarkTheme bool);
+
+--ARUCS
+CREATE TABLE ARUCS (ARUC INTEGER PRIMARY KEY UNIQUE, DateAdded DATE);
+
+--Years
+CREATE TABLE Years (Year INTEGER PRIMARY KEY UNIQUE, DateAdded DATE);
+
+--Marines
+CREATE TABLE Marines (EDIPI INTEGER PRIMARY KEY UNIQUE, FirstName VARCHAR(80), LastName VARCHAR(80), MI VARCHAR(3), Rank VARCHAR(20), PRUC VARCHAR(80));
+
+--DocumentTypes
+CREATE TABLE DocumentTypes (ID INTEGER PRIMARY KEY AUTOINCREMENT, Type VARCHAR(100));
+
+--Transaction Error TEXT
+CREATE TABLE TransactionErrorText (ID INTEGER PRIMARY KEY AUTOINCREMENT, TTC VARCHAR(20), ErrorCode VARCHAR(50), Description TEXT);
+
+--Documentation
+CREATE TABLE Documentation (ID INTEGER PRIMARY KEY AUTOINCREMENT, Marine INTEGER, ARUC INTEGER, DocType VARCHAR(80), UploadedOn DATE, UploadLocation TEXT, UploadedBy VARCHAR(100));
+
+--Pin codes
+CREATE TABLE PinCodes
+(
+ID INTEGER PRIMARY KEY AUTOINCREMENT,
+ProgramName VARCHAR(100),
+Pin INTEGER
+);
+
+INSERT INTO PinCodes
+(ProgramName, Pin)
+VALUES
+('Verifier', '1775'),
+('Preparer', '1775'),
+('Approver', '1775');
+
+-------------
+--In each Aruc
+--In each year
+
+.open Diaries.db
+
+--Diairies
+CREATE TABLE Diaries (DiaryNumber INTEGER PRIMARY KEY UNIQUE, Aruc INT, DiaryYear INT, DiaryDate DATE, CycleDate DATE, CycleNumber Int, Branch VARCHAR(100), Certifier VARCHAR(100), Uploaded BOOL, UploadLocation TEXT, UploadedBy VARCHAR(100), UploadedOn DATE, ReportDate DATE, Confirmed BOOL);
+
+--MemberDiaries
+CREATE TABLE MemberDiaries (ID INTEGER PRIMARY KEY AUTOINCREMENT, EDIPI INTEGER, DiaryNumber INTEGER);
+
+--PreparerDiaries
+CREATE TABLE PreparerDiaries (ID INTEGER PRIMARY KEY AUTOINCREMENT, EDIPI INTEGER, DiaryNumber INTEGER);
+
+--CertifierDiaries
+CREATE TABLE CertifierDiaries (ID INTEGER PRIMARY KEY AUTOINCREMENT, EDIPI INTEGER, DiaryNumber INTEGER);
+
+----------------
+
+--In each Diary Folder
+
+.open Transactions.db
+
+CREATE TABLE Transactions 
+(ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+DiaryNumber INTEGER,
+DiaryYear INTEGER,
+ARUC INTEGER,
+Branch VARCHAR(100),
+Certifier INTEGER,
+CertifierRank VARCHAR(20),
+CertifierFirstName VARCHAR(80),
+CertifierLastName VARCHAR(80),
+CertifierMI VARCHAR(3), 
+Preparer INTEGER,
+PreparerRank VARCHAR(20),
+PreparerFirstName VARCHAR(80),
+PreparerLastName VARCHAR(80),
+PreparerMI VARCHAR(3), 
+Member INTEGER,
+MemberRank VARCHAR(20),
+MemberFirstName VARCHAR(80),
+MemberLastName VARCHAR(80),
+MemberMI VARCHAR(3), 
+TTC INT, 
+TTS INT, 
+EnglishStatement TEXT, 
+HistoryStatement TEXT, 
+TransactionErrorCode VARCHAR(20), 
+DocumentRequired TEXT,
+DocumentMissing BOOL,
+DocumentAttached BOOL,
+UpdateDate Date,
+BatchNumber INTEGER,
+UploadLocation TEXT);
+
+-------------------------
+
+.open ESR.db
+
+--ESR Transaction Table
+CREATE TABLE ESRTransactions
+(
+ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+DiaryNumber INTEGER,
+DiaryYear INTEGER,
+DiaryUploadLocation TEXT,
+ARUC INTEGER,
+Branch VARCHAR(100),
+Certifier INTEGER,
+CertifierRank VARCHAR(20),
+CertifierFirstName VARCHAR(80),
+CertifierLastName VARCHAR(80),
+CertifierMI VARCHAR(3), 
+Preparer INTEGER,
+PreparerRank VARCHAR(20),
+PreparerFirstName VARCHAR(80),
+PreparerLastName VARCHAR(80),
+PreparerMI VARCHAR(3), 
+Member INTEGER,
+MemberRank VARCHAR(20),
+MemberFirstName VARCHAR(80),
+MemberLastName VARCHAR(80),
+MemberMI VARCHAR(3), 
+TTC INT, 
+TTS INT, 
+EnglishStatement TEXT, 
+HistoryStatement TEXT, 
+TransactionErrorCode VARCHAR(20), 
+DocumentRequired TEXT,
+DocumentMissing BOOL,
+DocumentAttached BOOL,
+UpdateDate Date,
+BatchNumber INTEGER,
+UploadLocation TEXT,
+IsRejected BOOL,
+ConfirmDate DATE,
+RejectDate DATE,
+BatchID INTEGER,
+ApproverDate DATE,
+NeedsConfirmed BOOL,
+Complete BOOL
+);
+
+--ESR Batch Table
+CREATE TABLE Batches
+(
+ID INTEGER PRIMARY KEY AUTOINCREMENT,
+CreatedBy VARCHAR(100),
+CreatedOn DATE,
+BatchNumber VARCHAR(100),
+NeedsConfirmed BOOL,
+Complete BOOL
+);
+
+--Comments Table
+CREATE TABLE Comments
+(
+ID INTEGER PRIMARY KEY AUTOINCREMENT,
+CreatedBy VARCHAR(100),
+CreatedOn DATE,
+CommentText TEXT,
+TransactionID INTEGER,
+BatchID INTEGER
+);
+
+--Combined Batch Transactions
+CREATE TABLE BatchTransactions
+(
+
+);
